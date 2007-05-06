@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
-import net.sf.jlayercheck.util.DependencyVisitor;
+import org.objectweb.asm.ClassVisitor;
 
 public interface ClassSource {
 	/**
@@ -13,7 +13,7 @@ public interface ClassSource {
 	 * @param v
 	 * @throws IOException
 	 */ 
-    public void call(DependencyVisitor v) throws IOException;
+    public void call(ClassVisitor v) throws IOException;
 
     /**
      * Returns a map that contains a mapping from the classname to

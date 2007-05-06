@@ -17,6 +17,7 @@
 		</module>
 		<module name="ant">
 			<package name="net.sf.jlayercheck.ant" />
+			<dependency name="util" />
 			<dependency name="util_model" />
 		</module>
 		<module name="output">

@@ -9,9 +9,8 @@ import java.net.URL;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.sf.jlayercheck.util.DependencyVisitor;
-
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 
 public class FilesystemClassSource implements ClassSource {
 
@@ -26,13 +25,13 @@ public class FilesystemClassSource implements ClassSource {
 		this.src = src;
 	}
 	
-    public void call(DependencyVisitor v) throws IOException {
+    public void call(ClassVisitor v) throws IOException {
 		File f = new File(getBin());
 
         checkDirectory(v, f);
 	}
 
-	protected void checkDirectory(DependencyVisitor v, File f) throws IOException, FileNotFoundException {
+	protected void checkDirectory(ClassVisitor v, File f) throws IOException, FileNotFoundException {
         File files[] = f.listFiles();
         if (files != null) {
         	for(File file : files) {
