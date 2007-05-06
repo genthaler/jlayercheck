@@ -14,7 +14,7 @@ import net.sf.jlayercheck.util.model.ClassSource;
 public class HTMLOutputTest extends TestCase {
 	public void testWrite() throws Exception {
 		// load and parse configuration, class and java files
-		InputStream is = getClass().getResource("/jlayercheck.xml").openStream();
+		InputStream is = getClass().getResource("/jlayercheck_test.xml").openStream();
 		XMLConfigurationParser xcp = new XMLConfigurationParser(is);
 		DependencyVisitor dv = new DependencyVisitor();
 		Map<String, URL> javaSources = new TreeMap<String, URL>();

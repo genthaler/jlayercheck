@@ -27,7 +27,7 @@ import net.sf.jlayercheck.util.model.ClassSource;
 public class JLCTask {
 
 	/** Default name for JLayerCheck configuration file */
-	public static final String CONFIG = "jlayercheck.xml"; //$NON-NLS-1$
+	public static final String CONFIG = "jlayercheck_test.xml"; //$NON-NLS-1$
 
 	/** Default name for JLayerCheck output dir */
 	public static final String OUTDIR = "jlayercheck-out"; //$NON-NLS-1$

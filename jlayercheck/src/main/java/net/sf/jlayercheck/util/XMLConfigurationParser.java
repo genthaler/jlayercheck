@@ -218,7 +218,7 @@ public class XMLConfigurationParser {
 	}
 	
 	public static void main(String args[]) throws FileNotFoundException, SAXException, IOException, ParserConfigurationException, ConfigurationException {
-		new XMLConfigurationParser(new FileInputStream("jlayercheck.xml"));
+		new XMLConfigurationParser(new FileInputStream("jlayercheck_test.xml"));
 	}
 
 	/**

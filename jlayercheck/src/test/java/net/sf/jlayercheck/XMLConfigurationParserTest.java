@@ -18,7 +18,7 @@ public class XMLConfigurationParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testParser() throws Exception {
-		InputStream is = getClass().getResource("/jlayercheck.xml").openStream();
+		InputStream is = getClass().getResource("/jlayercheck_test.xml").openStream();
 		
 		XMLConfigurationParser xcp = new XMLConfigurationParser(is);
 		
@@ -47,7 +47,7 @@ public class XMLConfigurationParserTest extends TestCase {
 	 */
 	public void testFindViolations() throws Exception {
 		// load and parse configuration, class and java files
-		InputStream is = getClass().getResource("/jlayercheck.xml").openStream();
+		InputStream is = getClass().getResource("/jlayercheck_test.xml").openStream();
 		XMLConfigurationParser xcp = new XMLConfigurationParser(is);
 		DependencyVisitor dv = new DependencyVisitor();
 		xcp.getClassSources().get(0).call(dv);
