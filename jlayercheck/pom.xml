@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- $Id: pom.xml,v 1.5 2007/05/04 20:13:50 timo Exp $ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Project data -->
+	<groupId>net.sf.jlayercheck</groupId>
+	<artifactId>jlayercheck</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>jlayercheck</name>
+	<url>http://jlayercheck.sf.net</url>
+	<description>
+		JLayerCheck checks package dependencies in Java projects to
+		ensure that they match the desired architecture. Packages are
+		grouped into modules and dependencies are specified. It can also
+		find cycles and orphaned classes.
+	</description>
+	<inceptionYear>2007</inceptionYear>
+	<licenses>
+		<license>
+			<name>GNU General Public License (GPL)</name>
+			<url>http://www.gnu.org/licenses/gpl.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>gunia</id>
+			<name>Dominique Gunia</name>
+			<roles>
+				<role>Java Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>timo</id>
+			<name>Timo Stülten</name>
+			<email>stuelten@users.sf.net</email>
+			<roles>
+				<role>Java Developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.java2html</groupId>
+			<artifactId>java2html</artifactId>
+			<version>5.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<!-- velocity as template engine for html output -->
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.5</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<debug>on</debug>
+				</configuration>
+			</plugin>
+
+			<!-- 
+				Maven does not properly handle non-ASCII for now, regardless of encoding settings.
+				<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+				<inputEncoding>UTF-8</inputEncoding>
+				<outputEncoding>UTF-8</outputEncoding>
+				</configuration>
+				</plugin>
+			-->
+
+		</plugins>
+	</build>
+
+	<!-- site settings -->
+	<reporting>
+		<plugins>
+			<plugin>
+				<!-- default maven reports -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+			</plugin>
+
+			<!-- report cross-references -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+			</plugin>
+
+			<!-- report some code metrics -->
+			<!--  works only with java 1.4
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				</plugin>
+			-->
+
+			<!-- report junit test results -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+
+			<!-- generate javadoc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<links>
+						<link>
+							http://java.sun.com/j2se/1.5.0/docs/api/
+						</link>
+						<link>http://jakarta.apache.org/oro/api</link>
+						<link>
+							http://jakarta.apache.org/commons/lang/api-release
+						</link>
+						<link>
+							http://jakarta.apache.org/commons/collections/api-release
+						</link>
+						<link>http://www.jdom.org/docs/apidocs</link>
+						<link>
+							http://logging.apache.org/log4j/docs/api
+						</link>
+						<link>http://excalibur.apache.org/apidocs</link>
+						<link>
+							http://tomcat.apache.org/tomcat-4.1-doc/servletapi
+						</link>
+						<link>http://asm.objectweb.org/current/doc/javadoc/user/</link>
+					</links>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</reporting>
+
+</project>

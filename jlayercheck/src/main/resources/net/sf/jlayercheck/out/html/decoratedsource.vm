@@ -1,0 +1,59 @@
+## Template for decorated source files
+##
+## $Author: timo $
+## $Id: decoratedsource.vm,v 1.1 2007/05/04 20:13:50 timo Exp $
+##
+######################################################################
+<html>
+	<head>
+		<title>${filename}</title>
+		
+		<!-- style definitions -->
+        <style type="text/css" media="all">@import "jlayercheck.css";</style>
+        
+		<!-- some javascript magic -->
+#set( $dummy = $tool.copyRessource("/yahoo-debug.js") )
+#set( $dummy = $tool.copyRessource("/event-debug.js") )
+#set( $dummy = $tool.copyRessource("/dom-debug.js") )
+#set( $dummy = $tool.copyRessource("/jlayercheck-debug.js") )
+        <script src='yahoo-debug.js'></script>
+        <script src='event-debug.js'></script>");
+        <script src='dom-debug.js'></script>");
+        <script src='jlayercheck.js'></script>");
+		<!-- Starts css class based JavaScript decoration on load -->
+        <script>YAHOO.util.Event.addListener(window, 'load', jlayercheckInit);</script>");
+        
+        </head>
+		
+		<body>;
+            <div align="left" class="java">
+    			<table border="0" cellpadding="3" cellspacing="0" bgcolor="#ffffff">
+#set( $linenumber = 0 )
+#foreach( $line in $lines )
+#set( $linenumber = $linenumber + 1 )
+					<tr>
+						<td>
+#if( $markedLines.containsKey($linenumber)) 
+## line contains illegal reference
+							<div class='msgErr'>
+#set( $dummy = $tool.copyRessource("/images/error.png") )
+#set( $errTxt = ${markedLines}.get(${linenumber} )
+								<img class="msgErrImg" src="images/error.png" title="$errTxt" />
+								<div class="msgErrText" id="errText$linenumber">
+									$errTxt
+								</div>
+							</div>
+#end## if
+						</td>
+						<td nowrap="nowrap" valign="top" align="left">
+							<code>
+								$line
+							</code>
+						</td>
+					</tr>
+## next line
+#end## next
+    			</table>
+			</div>
+		</body>
+</html>

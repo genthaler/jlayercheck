@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id: jlayerchecktask.xml,v 1.2 2007/05/01 19:52:20 timo Exp $ -->
+<project name="JLayerCheckTask" basedir="." default="jlayercheck">
+
+	<path id="classpath">
+		<!-- own classes -->
+		<pathelement location="${basedir}/target/classes" />
+		<!-- all jars in maven repo -->
+		<fileset dir="${user.home}/.m2/">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<pathconvert property="cp" refid="classpath" />
+	
+	<echo>start from directory ${user.dir}</echo>
+
+	<!-- ================================= 
+          target: jlayercheck              
+         ================================= -->
+	<target name="jlayercheck" depends="" description="--> start JLayerCheck">
+		<echo>Use classpath: ${cp}</echo>
+		<taskdef name="JLCTask" classname="net.sf.jlayercheck.ant.JLCTask" classpathref="classpath" />
+		<JLCTask config="${basedir}/src/test/resources/jlayercheck.xml" outDir="${basedir}/target/jlayercheck-out">
+		</JLCTask>
+	</target>
+
+</project>

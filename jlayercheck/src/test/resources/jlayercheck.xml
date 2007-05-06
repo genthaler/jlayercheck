@@ -1,0 +1,22 @@
+<jlayercheck>
+	<sources>
+		<filesystem bin="target/classes" src="src/main/java/" />
+		<filesystem bin="target/test-classes" src="src/test/java/" />
+	</sources>
+	<architecture>
+		<module name="util">
+			<package name="net.sf.jlayercheck.util" />
+		</module>
+		<module name="main">
+			<package name="net.sf.jlayercheck" />
+			<dependency name="util" />
+		</module>
+		<exclude>
+			<package name="java.**" />
+			<package name="javax.**" />
+			<package name="org.xml.**" />
+			<package name="org.objectweb.**" />
+		</exclude>
+		<entry name="net.sf.jlayercheck.HTMLOutputTest" />
+	</architecture>
+</jlayercheck>

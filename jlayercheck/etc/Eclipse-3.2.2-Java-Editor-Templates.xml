@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><templates><template autoinsert="true" context="java" deleted="false" description="separating comment" enabled="true" name="REMline">// ----------------------------------------------------------------------</template><template autoinsert="true" context="java" deleted="false" description="Fileheader" enabled="true" name="fileheader">/*
+ * $$Author: timo $$
+ * $$Id: Eclipse-3.2.2-Java-Editor-Templates.xml,v 1.1 2007/05/04 20:38:09 timo Exp $$ 
+ */
+</template></templates>

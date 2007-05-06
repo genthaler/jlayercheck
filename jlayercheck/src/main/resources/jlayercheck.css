@@ -1,0 +1,50 @@
+h1 {
+	font: italic normal 16pt georgia;
+	letter-spacing: 1px;
+	margin-bottom: 3pt;
+	color: #7D775C;
+	background-color: #EEEEEE;
+}
+
+h2 {
+	font: italic normal 12pt georgia;
+	letter-spacing: 1px;
+	margin-bottom: 3pt;
+	color: #7D775C;
+}
+
+h3 {
+	font: italic normal 13pt georgia;
+	letter-spacing: 1px;
+	margin-bottom: 0px;
+	color: #7D775C;
+}
+
+li {
+	background: transparent url(images/list.png) left center no-repeat;
+	padding-left: 15px;
+	text-align: left;
+	font: normal 11px "Lucida Grande", "Lucida Sans Unicode", verdana,
+		lucida, sans-serif;
+	text-decoration: none;
+	color: #999;
+}
+
+ul {
+	list-style-type: none;
+	text-align: left;
+}
+
+/* hide msg block but prepare to show as overlay */
+.msgErrText {
+	position: absolute;
+	border: 1px solid #6699bb;
+	background-color: #e0e0e0;
+	padding: 2px 2px 2px 2px;
+	display: none;
+}
+
+/* display text when msg block was clicked */
+.clicked .msgErrText {
+	display: block;
+}
