@@ -19,7 +19,7 @@ import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.signature.SignatureVisitor;
 
 /**
- * DependencyVisitor
+ * DependencyVisitor (based on an example class from the ASM package).
  * 
  * @author Eugene Kuleshov
  */

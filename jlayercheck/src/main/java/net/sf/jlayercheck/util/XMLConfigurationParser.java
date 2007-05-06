@@ -265,7 +265,7 @@ public class XMLConfigurationParser {
 
 				if (classname.matches(packagename)) {
 					if (result == null) {
-						result = packagename;
+						result = modulename;
 					} else {
 						throw new OverlappingModulesDefinitionException("Class "+classname+" is matches by more than one module definition.");
 					}

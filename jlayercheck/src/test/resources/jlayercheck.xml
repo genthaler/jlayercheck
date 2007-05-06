@@ -1,0 +1,44 @@
+<jlayercheck>
+	<sources>
+		<filesystem bin="target/classes" src="src/main/java/" />
+		<filesystem bin="target/test-classes" src="src/test/java/" />
+	</sources>
+	<architecture>
+		<module name="util">
+			<package name="net.sf.jlayercheck.util" />
+			<dependency name="util_model" />
+			<dependency name="util_io" />
+		</module>
+		<module name="util_io">
+			<package name="net.sf.jlayercheck.util.io" />
+		</module>
+		<module name="util_model">
+			<package name="net.sf.jlayercheck.util.model" />
+		</module>
+		<module name="ant">
+			<package name="net.sf.jlayercheck.ant" />
+			<dependency name="util_model" />
+		</module>
+		<module name="output">
+			<package name="net.sf.jlayercheck.out.*" />
+		</module>
+		<module name="main">
+			<package name="net.sf.jlayercheck" />
+			<dependency name="util" />
+			<dependency name="util_model" />
+			<dependency name="ant" />
+			<dependency name="output" />
+		</module>
+		<exclude>
+			<package name="java.*" />
+			<package name="javax.*" />
+			<package name="org.xml.*" />
+			<package name="org.w3c.*" />
+			<package name="org.objectweb.*" />
+			<package name="junit.framework.*" />
+			<package name="de.java2html.*" />
+			<package name="org.apache.*" />
+		</exclude>
+		<entry name="net.sf.jlayercheck.HTMLOutputTest" />
+	</architecture>
+</jlayercheck>

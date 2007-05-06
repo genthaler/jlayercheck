@@ -36,6 +36,10 @@ public class HTMLOutput {
      * @throws IOException
      */
 	public void write(DependencyVisitor dv, XMLConfigurationParser xcp) throws IOException {
+		// create necessary output directories
+		new File(outputDir).mkdirs();
+		
+		// open output stream
 		FileOutputStream fos = new FileOutputStream(outputDir+File.separator+"unspecified.html");
 		PrintWriter pw = new PrintWriter(fos);
 		
