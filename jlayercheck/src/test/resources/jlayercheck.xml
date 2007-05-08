@@ -29,6 +29,11 @@
 			<dependency name="util_model" />
 			<dependency name="ant" />
 			<dependency name="output" />
+			<dependency name="gui" />
+		</module>
+		<module name="gui">
+			<package name="net.sf.jlayercheck.gui" />
+			<dependency name="util" />
 		</module>
 		<exclude>
 			<package name="java.*" />

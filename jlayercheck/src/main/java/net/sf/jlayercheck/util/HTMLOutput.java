@@ -10,6 +10,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.imageio.ImageIO;
+
+import net.sf.jlayercheck.gui.CycleFoundException;
+import net.sf.jlayercheck.gui.GraphModuleDependencies;
 import net.sf.jlayercheck.util.model.ClassDependency;
 import de.java2html.Java2Html;
 import de.java2html.options.JavaSourceConversionOptions;
@@ -73,77 +77,26 @@ public class HTMLOutput {
 
 			fos = new FileOutputStream(outputDir+File.separator+"violations.html");
 			pw = new PrintWriter(fos);
+			
 			pw.println("<html><head><title>Dependency violations</title>");
 			pw.println("<style type=\"text/css\" media=\"all\">@import \"jlayercheck.css\";</style>");
 			pw.println("</head><body>");
-			pw.println("<h1>Dependency violations by packages:</h1>");
-			for(String packagename : dv.getPackages().keySet()) {
-				boolean wrotePackageHeader = false;
-				for(String classname : dv.getPackages().get(packagename)) {
-					String classPackageName = DependencyVisitor.getPackageName(classname);
-					String classmodule = xcp.getPackageModules().get(classPackageName);
-
-					if (unallowedDependencies.get(classname) != null) {
-						if (!wrotePackageHeader) {
-							wrotePackageHeader = true;
-							pw.println("<br/>");
-							pw.println("<h2><img src=\"images/package.png\" /> Package "+formatPackageName(packagename)+"</h2>");
-						}
-
-						// Create link to sources
-						String link = classname.replaceAll("/", "_")+".html";
-						pw.println("<h3><img src=\"images/class.png\" /> Class <a href=\""+link+"\">"+formatPackageName(classname)+"</a> ("+classmodule+")</h3>");
-						pw.println("<ul>");
-						Map<Integer, String> markedLines = new TreeMap<Integer, String>();
-						for(String dependency : unallowedDependencies.get(classname).keySet()) {
-							String dependencyPackageName = DependencyVisitor.getPackageName(dependency);
-
-							String dependencymodule = xcp.getPackageModules().get(dependencyPackageName);
-
-//							System.out.print("Class "+classname+" ("+classmodule+") must not use class "+dependency+" ("+dependencymodule+") in line ");
-							pw.println("<li>"+formatPackageName(dependency)+" ("+dependencymodule+")</li>");
-
-							System.out.println("class="+classname+" dep="+dependency);
-							for(int line : unallowedDependencies.get(classname).get(dependency).getLineNumbers()) {
-								System.out.print(" "+line);
-								markedLines.put(line, "must not depend on "+formatPackageName(dependency)+" ("+dependencymodule+")");
-							}
-							System.out.println();
-						}
-						pw.println("</ul>");
-
-						// write sources
-						URL url = sourceFiles.get(classname);
-						if (url != null) {
-							String content = readURL(url);
-							JavaSourceConversionOptions options = JavaSourceConversionOptions.getDefault();
-							options.setShowLineNumbers(true);
-							content = Java2Html.convertToHtml(content, options);
-
-							writeSourceFile(outputDir+File.separator+link,
-									content,
-									markedLines);
-						}
-					}
-				}
+			
+			// write module dependencies
+			pw.println("<h1>Module dependencies:</h1>");
+			try {
+				GraphModuleDependencies gmd = new GraphModuleDependencies(xcp.getModuleDependencies());
+				ImageIO.write(gmd.getImage(), "png", new File(outputDir+File.separator+"images"+File.separator+"hierarchy.png"));
+				pw.println("<img src=\"images/hierarchy.png\" />");
+			} catch (CycleFoundException e) {
+				pw.println("<b>The module dependency graph contains cycles (which should be removed)!</b>");
 			}
+			
+			// write dependency violations
+			writeDependencyViolations(dv, xcp, pw, unallowedDependencies, sourceFiles);
 
 			// write orphaned classes information
-			Set<String> orphanedClasses;
-			pw.println("<br/>");
-			pw.println("<h1><img src=\"images/class.png\" /> Orphaned classes:</h1>");
-			pw.println("<ul>");
-			try {
-				orphanedClasses = xcp.getOrphanedClasses(dv);
-				for(String classname : orphanedClasses) {
-					pw.println("<li>" + formatPackageName(classname) + "</li>");
-				}
-			} catch (OrphanedSearchException e) {
-				e.printStackTrace();
-
-				pw.println("<b>An error ocurred: "+e.getMessage()+"</b>");
-			}
-			pw.println("</ul>");
+			writeOrphanedClasses(dv, xcp, pw);
 
 			pw.println("</body>");
 			pw.close();
@@ -151,6 +104,78 @@ public class HTMLOutput {
 		} catch (OverlappingModulesDefinitionException e1) {
 			pw.println("<html><head></head><body>Configuration error: "+e1.getMessage()+"</body>");
 		}
+	}
+
+	protected void writeDependencyViolations(DependencyVisitor dv, XMLConfigurationParser xcp, PrintWriter pw, Map<String, Map<String, ClassDependency>> unallowedDependencies, Map<String, URL> sourceFiles) throws IOException {
+		pw.println("<h1>Dependency violations by packages:</h1>");
+		for(String packagename : dv.getPackages().keySet()) {
+			boolean wrotePackageHeader = false;
+			for(String classname : dv.getPackages().get(packagename)) {
+				String classPackageName = DependencyVisitor.getPackageName(classname);
+				String classmodule = xcp.getPackageModules().get(classPackageName);
+
+				if (unallowedDependencies.get(classname) != null) {
+					if (!wrotePackageHeader) {
+						wrotePackageHeader = true;
+						pw.println("<br/>");
+						pw.println("<h2><img src=\"images/package.png\" /> Package "+formatPackageName(packagename)+"</h2>");
+					}
+
+					// Create link to sources
+					String link = classname.replaceAll("/", "_")+".html";
+					pw.println("<h3><img src=\"images/class.png\" /> Class <a href=\""+link+"\">"+formatPackageName(classname)+"</a> ("+classmodule+")</h3>");
+					pw.println("<ul>");
+					Map<Integer, String> markedLines = new TreeMap<Integer, String>();
+					for(String dependency : unallowedDependencies.get(classname).keySet()) {
+						String dependencyPackageName = DependencyVisitor.getPackageName(dependency);
+
+						String dependencymodule = xcp.getPackageModules().get(dependencyPackageName);
+
+//							System.out.print("Class "+classname+" ("+classmodule+") must not use class "+dependency+" ("+dependencymodule+") in line ");
+						pw.println("<li>"+formatPackageName(dependency)+" ("+dependencymodule+")</li>");
+
+						System.out.println("class="+classname+" dep="+dependency);
+						for(int line : unallowedDependencies.get(classname).get(dependency).getLineNumbers()) {
+							System.out.print(" "+line);
+							markedLines.put(line, "must not depend on "+formatPackageName(dependency)+" ("+dependencymodule+")");
+						}
+						System.out.println();
+					}
+					pw.println("</ul>");
+
+					// write sources
+					URL url = sourceFiles.get(classname);
+					if (url != null) {
+						String content = readURL(url);
+						JavaSourceConversionOptions options = JavaSourceConversionOptions.getDefault();
+						options.setShowLineNumbers(true);
+						content = Java2Html.convertToHtml(content, options);
+
+						writeSourceFile(outputDir+File.separator+link,
+								content,
+								markedLines);
+					}
+				}
+			}
+		}
+	}
+
+	protected void writeOrphanedClasses(DependencyVisitor dv, XMLConfigurationParser xcp, PrintWriter pw) {
+		Set<String> orphanedClasses;
+		pw.println("<br/>");
+		pw.println("<h1><img src=\"images/class.png\" /> Orphaned classes:</h1>");
+		pw.println("<ul>");
+		try {
+			orphanedClasses = xcp.getOrphanedClasses(dv);
+			for(String classname : orphanedClasses) {
+				pw.println("<li>" + formatPackageName(classname) + "</li>");
+			}
+		} catch (OrphanedSearchException e) {
+			e.printStackTrace();
+
+			pw.println("<b>An error ocurred: "+e.getMessage()+"</b>");
+		}
+		pw.println("</ul>");
 	}
     
     /**

@@ -1,9 +1,7 @@
 package net.sf.jlayercheck.gui;
 
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,44 +14,56 @@ import javax.swing.JApplet;
 import javax.swing.JPanel;
 
 import org.jgraph.JGraph;
+import org.jgraph.plugins.layouts.AnnealingLayoutAlgorithm;
+import org.jgraph.plugins.layouts.CircleGraphLayout;
+import org.jgraph.plugins.layouts.GEMLayoutAlgorithm;
 import org.jgraph.plugins.layouts.JGraphLayoutAlgorithm;
-import org.jgraph.plugins.layouts.SpringEmbeddedLayoutAlgorithm;
-import org.jgrapht.ListenableGraph;
+import org.jgraph.plugins.layouts.OrderedTreeLayoutAlgorithm;
+import org.jgraph.plugins.layouts.RadialTreeLayoutAlgorithm;
+import org.jgraph.plugins.layouts.SugiyamaLayoutAlgorithm;
+import org.jgraph.plugins.layouts.TreeLayoutAlgorithm;
+import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.ListenableDirectedGraph;
 
-public class GraphMain2 extends JApplet {
+public class GraphModuleDependencies extends JApplet {
 
 	private JGraphModelAdapter m_jgAdapter;
 	protected JGraph jgraph;
 
     protected List cells = new ArrayList();
-    /**
-     * @see java.applet.Applet#init().
-     */
+
     public static void main(String args[]) throws Exception {
     	Map<String, Set<String>> testmap = new TreeMap<String, Set<String>>();
     	
     	Set<String> guiset = new TreeSet<String>();
     	guiset.add("domain");
     	guiset.add("persistency");
-    	testmap.put("gui", guiset);
+    	testmap.put("gui3", guiset);
     	
     	Set<String> pset = new TreeSet<String>();
     	pset.add("domain");
     	testmap.put("persistency", pset);
 
     	Set<String> dset = new TreeSet<String>();
+    	dset.add("gui3");
     	testmap.put("domain", dset);
 
-    	BufferedImage bi = new GraphMain2(testmap).getImage();
+    	BufferedImage bi = new GraphModuleDependencies(testmap).getImage();
     	ImageIO.write(bi, "png", new File("/tmp/test2.png"));
     }
     
-    public GraphMain2(Map<String, Set<String>> modulemap) {
+    /**
+     * Creates a graph from the given dependencies. The dependency graph
+     * must be free of cycles.
+     * 
+     * @param modulemap
+     * @throws CycleFoundException 
+     */
+    public GraphModuleDependencies(Map<String, Set<String>> modulemap) throws CycleFoundException {
         // create a JGraphT graph
-        ListenableGraph g = new ListenableDirectedGraph( DefaultEdge.class );
+        ListenableDirectedGraph<String, String> g = new ListenableDirectedGraph( DefaultEdge.class );
 
         // create a visualization using JGraph, via an adapter
         m_jgAdapter = new JGraphModelAdapter( g );
@@ -71,10 +81,14 @@ public class GraphMain2 extends JApplet {
         	}
         }
 
-        // that's all there is to it!...
+        CycleDetector<String, String> cd = new CycleDetector<String, String>(g);
         
-        JGraphLayoutAlgorithm rtla = new SpringEmbeddedLayoutAlgorithm();
+        if (cd.detectCycles()) {
+        	throw new CycleFoundException();
+        }
         
+        JGraphLayoutAlgorithm rtla = new SugiyamaLayoutAlgorithm(); //SpringEmbeddedLayoutAlgorithm();
+
         JGraphLayoutAlgorithm.applyLayout(jgraph, rtla, jgraph.getRoots());
 
         headless.setDoubleBuffered(false);
@@ -84,20 +98,14 @@ public class GraphMain2 extends JApplet {
         headless.addNotify();
         headless.validate();
     }
-    
+
+    /**
+     * Returns a image containing the graph.
+     * 
+     * @return BufferedImage
+     */
     public BufferedImage getImage() {
-//        Object cells[] = jgraph.getRoots();
-//        Rectangle2D bounds = jgraph.toScreen(jgraph.getCellBounds(cells));
-
     	BufferedImage bi = jgraph.getImage(jgraph.getBackground(), 5);
-
-//        try {
-////			ImageIO.write(bi, "png", new File("/tmp/test.png"));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-    	
     	return bi;
     }
 }

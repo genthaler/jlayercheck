@@ -133,6 +133,7 @@ public class XMLConfigurationParser {
 	protected void parseModule(Node moduleNode) {
 		Element elemModule = (Element) moduleNode;
 		String moduleName = elemModule.getAttribute("name");
+		moduleDependencies.put(moduleName, new TreeSet<String>());
 
 		// get the tag package and dependency
 		NodeList nodeList = moduleNode.getChildNodes();
