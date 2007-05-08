@@ -1,6 +1,6 @@
 /*
- * $Author: timo $
- * $Id: IOHelper.java,v 1.1 2007/05/04 22:12:11 timo Exp $ 
+ * $Author$
+ * $Id$ 
  */
 package net.sf.jlayercheck.util.io;
 
@@ -20,8 +20,8 @@ import java.net.URL;
  * Some helper methods for file and io handling.
  * 
  * @author timo
- * @author $Author: timo $
- * @version $Id: IOHelper.java,v 1.1 2007/05/04 22:12:11 timo Exp $
+ * @author $Author$
+ * @version $Id$
  */
 public class IOHelper {
 

@@ -1,4 +1,4 @@
-// $Id: jlayercheck.js,v 1.1 2007/05/01 19:26:54 timo Exp $
+// $Id$
 
 /** main init function, called on document load */
 jlayercheckInit = function() {

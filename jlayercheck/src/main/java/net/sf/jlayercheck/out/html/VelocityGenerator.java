@@ -15,8 +15,8 @@ import org.apache.velocity.exception.ResourceNotFoundException;
  * Prepares velocity and an initial context for a template.
  * 
  * @author timo
- * @author $Author: timo $
- * @version $Id: VelocityGenerator.java,v 1.1 2007/05/04 20:13:50 timo Exp $
+ * @author $Author$
+ * @version $Id$
  */
 public class VelocityGenerator {
 

@@ -1,23 +1,25 @@
-h1 {
-	font: italic normal 16pt georgia;
+/* $Id$ */
+
+h1, h2, h3 {
+	font-familiy: georgia, "Times New Roman", times, serif;
+	font-style: italic;
+	font-weight: normal;
 	letter-spacing: 1px;
 	margin-bottom: 3pt;
 	color: #7D775C;
+}
+
+h1 {
+	font-size: 175%;
 	background-color: #EEEEEE;
 }
 
 h2 {
-	font: italic normal 12pt georgia;
-	letter-spacing: 1px;
-	margin-bottom: 3pt;
-	color: #7D775C;
+	font-size: 150%;
 }
 
 h3 {
-	font: italic normal 13pt georgia;
-	letter-spacing: 1px;
-	margin-bottom: 0px;
-	color: #7D775C;
+	font-size: 125%;
 }
 
 li {
@@ -40,7 +42,7 @@ ul {
 	position: absolute;
 	border: 1px solid #6699bb;
 	background-color: #e0e0e0;
-	padding: 2px 2px 2px 2px;
+	padding: 3px;
 	display: none;
 }
 
