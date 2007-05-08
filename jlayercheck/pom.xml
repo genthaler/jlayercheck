@@ -69,6 +69,25 @@
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 			<version>1.5</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>jgrapht</groupId>
+			<artifactId>jgrapht</artifactId>
+			<version>0.7.1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>jgraph</groupId>
+			<artifactId>jgraph</artifactId>
+			<version>5.8.3.1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>jgraphpad</groupId>
+			<artifactId>layouts</artifactId>
+			<version>5.10.0.2</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
@@ -158,5 +177,24 @@
 
 		</plugins>
 	</reporting>
+
+	<repositories>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+			<id>jlayercheck</id>
+			<name>jlayercheck</name>
+			<url>http://jlayercheck.sf.net/maven2</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
 
 </project>
