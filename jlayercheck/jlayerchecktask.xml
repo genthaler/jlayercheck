@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: jlayerchecktask.xml,v 1.2 2007/05/01 19:52:20 timo Exp $ -->
+<!-- $Id$ -->
 <project name="JLayerCheckTask" basedir="." default="jlayercheck">
 
 	<path id="classpath">

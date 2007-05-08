@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: pom.xml,v 1.5 2007/05/04 20:13:50 timo Exp $ -->
+<!-- $Id$ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -56,38 +56,32 @@
 			<groupId>asm</groupId>
 			<artifactId>asm</artifactId>
 			<version>3.0</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>de.java2html</groupId>
 			<artifactId>java2html</artifactId>
 			<version>5.0</version>
-			<scope>compile</scope>
 		</dependency>
 		<!-- velocity as template engine for html output -->
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 			<version>1.5</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>jgrapht</groupId>
 			<artifactId>jgrapht</artifactId>
 			<version>0.7.1</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>jgraph</groupId>
 			<artifactId>jgraph</artifactId>
 			<version>5.8.3.1</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>jgraphpad</groupId>
 			<artifactId>layouts</artifactId>
 			<version>5.10.0.2</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
@@ -104,7 +98,9 @@
 			</plugin>
 
 			<!-- 
-				Maven does not properly handle non-ASCII for now, regardless of encoding settings.
+				Commented out, because 
+				Maven does not properly handle non-ASCII for now, (20070508)
+				regardless of encoding settings.
 				<plugin>
 				<artifactId>maven-site-plugin</artifactId>
 				<configuration>
@@ -152,6 +148,7 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
 					<links>
+						<!-- Generate javadocs with links to other javadocs -->
 						<link>
 							http://java.sun.com/j2se/1.5.0/docs/api/
 						</link>
@@ -180,6 +177,10 @@
 
 	<repositories>
 		<repository>
+			<!-- 
+				we need current jgrapht and jgraphpad, which are not  
+				available in main maven repositories at this moment (20070508)
+			-->
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>

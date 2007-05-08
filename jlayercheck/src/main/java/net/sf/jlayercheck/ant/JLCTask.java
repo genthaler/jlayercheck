@@ -21,8 +21,8 @@ import net.sf.jlayercheck.util.model.ClassSource;
  * Configure and start HTML-output generation as ant task.
  * 
  * @author timo
- * @author $Author: timo $
- * @version $Id: JLCTask.java,v 1.3 2007/05/02 20:38:26 timo Exp $
+ * @author $Author$
+ * @version $Id$
  */
 public class JLCTask {
 
