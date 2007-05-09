@@ -83,6 +83,11 @@
 			<artifactId>layouts</artifactId>
 			<version>5.10.0.2</version>
 		</dependency>
+		<dependency>
+			<groupId>treewrapper</groupId>
+			<artifactId>treewrapper</artifactId>
+			<version>2.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
