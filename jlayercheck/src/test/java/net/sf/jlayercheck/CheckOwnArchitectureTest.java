@@ -19,7 +19,6 @@ import net.sf.jlayercheck.util.model.ClassSource;
  */
 public class CheckOwnArchitectureTest extends TestCase {
 	public void testCheckOwn() throws Exception {
-		System.out.println("TESTCHECKOWN");
 		// load and parse configuration, class and java files
 		InputStream is = getClass().getResource("/jlayercheck.xml").openStream();
 		XMLConfigurationParser xcp = new XMLConfigurationParser(is);

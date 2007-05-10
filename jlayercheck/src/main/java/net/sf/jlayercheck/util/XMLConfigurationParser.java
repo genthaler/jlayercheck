@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,6 +33,8 @@ import org.xml.sax.SAXException;
  * @author webmaster@earth3d.org
  */
 public class XMLConfigurationParser {
+	protected static Logger logger = Logger.getLogger("JLayerCheck"); 
+	
 	/**
 	 * Contains the packages that belong to one module.
 	 */
@@ -103,7 +106,7 @@ public class XMLConfigurationParser {
 				Element elemSource = (Element) sourceNode;
 				
 				if (sourceNode.getNodeName().equals("filesystem")) {
-					System.out.println("Filesystem: "+elemSource.getAttribute("bin"));
+					logger.finer("Filesystem: "+elemSource.getAttribute("bin"));
 					
 					classSources.add(new FilesystemClassSource(elemSource.getAttribute("bin"), elemSource.getAttribute("src")));
 				}
@@ -192,7 +195,7 @@ public class XMLConfigurationParser {
 	}
 
 	protected void addDependencyToModule(String moduleName, String dependencyName) {
-		System.out.println("Add dependency "+dependencyName+" to module "+moduleName);
+		logger.finer("Add dependency "+dependencyName+" to module "+moduleName);
 		
 		Set<String> deps = moduleDependencies.get(moduleName);
 		
@@ -205,7 +208,7 @@ public class XMLConfigurationParser {
 	}
 
 	protected void addPackageToModule(String moduleName, String packageName) {
-		System.out.println("Add package "+packageName+" to module "+moduleName);
+		logger.finer("Add package "+packageName+" to module "+moduleName);
 		packageName = packageName.replaceAll("\\.", "/");
 
 		Set<String> packs = modulePackages.get(moduleName);
@@ -412,7 +415,7 @@ public class XMLConfigurationParser {
                     // a class file for a source file is missing!
                     throw new OrphanedSearchException("Class file for "+visitedClass+" is not available! (Source file is "+allClassSources.get(visitedClass).toExternalForm());
                 } else {
-                    System.out.println("Dependencies for "+visitedClass+" not found!");
+                    logger.fine("Dependencies for "+visitedClass+" not found!");
                 }
             }
         }

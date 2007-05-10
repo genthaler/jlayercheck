@@ -81,7 +81,7 @@ public class DependencyVisitor implements
         }
         currentLineNumber = 0;
 
-        System.out.println("Visit class "+name);
+//        System.out.println("Visit class "+name);
         if (signature == null) {
             addName(superName);
             addNames(interfaces);

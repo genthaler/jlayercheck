@@ -12,8 +12,9 @@
 	<classpathentry kind="var" path="M2_REPO/oro/oro/2.0.8/oro-2.0.8.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.1/commons-lang-2.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/jgraphpad/layouts/5.10.0.2/layouts-5.10.0.2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/jgraphpad/layouts/5.10.0.2/layouts-5.10.0.2.jar" sourcepath="/SOURCES/jgraphpad-5.10.0.2-src.zip"/>
 	<classpathentry kind="var" path="M2_REPO/jgrapht/jgrapht/0.7.1/jgrapht-0.7.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/jgraph/jgraph/5.8.3.1/jgraph-5.8.3.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/treewrapper/treewrapper/2.0/treewrapper-2.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

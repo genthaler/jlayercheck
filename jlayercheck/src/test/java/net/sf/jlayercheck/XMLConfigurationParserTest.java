@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 import net.sf.jlayercheck.util.DependencyVisitor;
@@ -12,6 +13,8 @@ import net.sf.jlayercheck.util.XMLConfigurationParser;
 import net.sf.jlayercheck.util.model.ClassDependency;
 
 public class XMLConfigurationParserTest extends TestCase {
+	protected static Logger logger = Logger.getLogger("JLayerCheck");
+	
 	/**
 	 * Tests the basic parsing functionality.
 	 * 
@@ -60,7 +63,7 @@ public class XMLConfigurationParserTest extends TestCase {
 		// find violations
 		
 		for(String classPackageName : unspecifiedPackages) {
-			System.out.println("Warning: Package "+classPackageName+" has no module.");
+			logger.fine("Warning: Package "+classPackageName+" has no module.");
 		}
 		
 		for(String classname : unallowedDependencies.keySet()) {
@@ -71,12 +74,12 @@ public class XMLConfigurationParserTest extends TestCase {
 				String classmodule = xcp.getPackageModules().get(classPackageName);
 				String dependencymodule = xcp.getPackageModules().get(dependencyPackageName);
 
-				System.out.print("Class "+classname+" ("+classmodule+") must not use class "+dependency+" ("+dependencymodule+") in line ");
+				logger.finer("Class "+classname+" ("+classmodule+") must not use class "+dependency+" ("+dependencymodule+") in line ");
 				
 				for(int line : unallowedDependencies.get(classname).get(dependency).getLineNumbers()) {
-					System.out.print(" "+line);
+					logger.finest(" "+line);
 				}
-				System.out.println();
+				logger.finest("");
 			}
 		}
 		

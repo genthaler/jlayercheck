@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -24,6 +25,11 @@ import de.java2html.options.JavaSourceConversionOptions;
  * @author webmaster@earth3d.org
  */
 public class HTMLOutput {
+	protected static Logger logger = Logger.getLogger("JLayerCheck");
+	
+	/**
+	 * The directory to write the HTML output to.
+	 */
 	protected String outputDir;
 	
 	public HTMLOutput(String outputDir) {
@@ -134,12 +140,12 @@ public class HTMLOutput {
 //							System.out.print("Class "+classname+" ("+classmodule+") must not use class "+dependency+" ("+dependencymodule+") in line ");
 						pw.println("<li>"+formatPackageName(dependency)+" ("+dependencymodule+")</li>");
 
-						System.out.println("class="+classname+" dep="+dependency);
+						logger.finer("class="+classname+" dep="+dependency);
 						for(int line : unallowedDependencies.get(classname).get(dependency).getLineNumbers()) {
-							System.out.print(" "+line);
+							logger.finest(" "+line);
 							markedLines.put(line, "must not depend on "+formatPackageName(dependency)+" ("+dependencymodule+")");
 						}
-						System.out.println();
+						logger.finest("");
 					}
 					pw.println("</ul>");
 
