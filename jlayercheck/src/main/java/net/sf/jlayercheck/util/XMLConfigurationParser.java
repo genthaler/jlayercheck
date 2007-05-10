@@ -17,6 +17,9 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.sf.jlayercheck.util.exceptions.ConfigurationException;
+import net.sf.jlayercheck.util.exceptions.OrphanedSearchException;
+import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
 import net.sf.jlayercheck.util.model.ClassSource;
 import net.sf.jlayercheck.util.model.FilesystemClassSource;
 
@@ -271,7 +274,7 @@ public class XMLConfigurationParser {
 					if (result == null) {
 						result = modulename;
 					} else {
-						throw new OverlappingModulesDefinitionException("Class "+classname+" is matches by more than one module definition.");
+						throw new OverlappingModulesDefinitionException("Class "+classname+" is matched by more than one module definition.");
 					}
 				}
 			}

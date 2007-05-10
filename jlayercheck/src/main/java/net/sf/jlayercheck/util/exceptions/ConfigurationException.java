@@ -1,4 +1,4 @@
-package net.sf.jlayercheck.util;
+package net.sf.jlayercheck.util.exceptions;
 
 /**
  * Thrown if configuration contains errors.

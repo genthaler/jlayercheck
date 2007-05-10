@@ -1,4 +1,4 @@
-package net.sf.jlayercheck.gui;
+package net.sf.jlayercheck.util.graph;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -12,6 +12,8 @@ import java.util.TreeSet;
 import javax.imageio.ImageIO;
 import javax.swing.JApplet;
 import javax.swing.JPanel;
+
+import net.sf.jlayercheck.util.exceptions.CycleFoundException;
 
 import org.jgraph.JGraph;
 import org.jgraph.plugins.layouts.AnnealingLayoutAlgorithm;

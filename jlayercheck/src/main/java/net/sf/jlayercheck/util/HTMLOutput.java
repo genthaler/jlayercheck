@@ -13,8 +13,10 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-import net.sf.jlayercheck.gui.CycleFoundException;
-import net.sf.jlayercheck.gui.GraphModuleDependencies;
+import net.sf.jlayercheck.util.exceptions.CycleFoundException;
+import net.sf.jlayercheck.util.exceptions.OrphanedSearchException;
+import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
+import net.sf.jlayercheck.util.graph.GraphModuleDependencies;
 import net.sf.jlayercheck.util.model.ClassDependency;
 import de.java2html.Java2Html;
 import de.java2html.options.JavaSourceConversionOptions;
@@ -109,16 +111,18 @@ public class HTMLOutput {
 			fos.close();
 		} catch (OverlappingModulesDefinitionException e1) {
 			pw.println("<html><head></head><body>Configuration error: "+e1.getMessage()+"</body>");
+			pw.close();
+			fos.close();
 		}
 	}
 
-	protected void writeDependencyViolations(DependencyVisitor dv, XMLConfigurationParser xcp, PrintWriter pw, Map<String, Map<String, ClassDependency>> unallowedDependencies, Map<String, URL> sourceFiles) throws IOException {
+	protected void writeDependencyViolations(DependencyVisitor dv, XMLConfigurationParser xcp, PrintWriter pw, Map<String, Map<String, ClassDependency>> unallowedDependencies, Map<String, URL> sourceFiles) throws IOException, OverlappingModulesDefinitionException {
 		pw.println("<h1>Dependency violations by packages:</h1>");
 		for(String packagename : dv.getPackages().keySet()) {
 			boolean wrotePackageHeader = false;
 			for(String classname : dv.getPackages().get(packagename)) {
 				String classPackageName = DependencyVisitor.getPackageName(classname);
-				String classmodule = xcp.getPackageModules().get(classPackageName);
+				String classmodule = xcp.getMatchingModule(classname);
 
 				if (unallowedDependencies.get(classname) != null) {
 					if (!wrotePackageHeader) {

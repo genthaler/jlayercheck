@@ -1,4 +1,4 @@
-package net.sf.jlayercheck.util;
+package net.sf.jlayercheck.util.exceptions;
 
 public class OverlappingModulesDefinitionException extends Exception {
     /** SUID  */

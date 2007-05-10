@@ -1,4 +1,4 @@
-package net.sf.jlayercheck.util;
+package net.sf.jlayercheck.util.exceptions;
 
 /**
  * This exception is used in the search for orphaned classes when an error occurs.

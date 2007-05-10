@@ -8,12 +8,21 @@
 			<package name="net.sf.jlayercheck.util" />
 			<dependency name="util_model" />
 			<dependency name="util_io" />
+			<dependency name="util_exceptions" />
+			<dependency name="util_graph" />
 		</module>
 		<module name="util_io">
 			<package name="net.sf.jlayercheck.util.io" />
 		</module>
 		<module name="util_model">
 			<package name="net.sf.jlayercheck.util.model" />
+		</module>
+		<module name="util_exceptions">
+			<package name="net.sf.jlayercheck.util.exceptions" />
+		</module>
+		<module name="util_graph">
+			<package name="net.sf.jlayercheck.util.graph" />
+			<dependency name="util_exceptions" />
 		</module>
 		<module name="ant">
 			<package name="net.sf.jlayercheck.ant" />
@@ -22,6 +31,7 @@
 		</module>
 		<module name="output">
 			<package name="net.sf.jlayercheck.out.*" />
+			<dependency name="util_io" />
 		</module>
 		<module name="main">
 			<package name="net.sf.jlayercheck" />
@@ -34,11 +44,16 @@
 		<module name="gui">
 			<package name="net.sf.jlayercheck.gui" />
 			<dependency name="util" />
+			<dependency name="util_exceptions" />
+			<dependency name="util_graph" />
 		</module>
 		<exclude>
 			<package name="java.*" />
 			<package name="javax.*" />
 			<package name="org.xml.*" />
+			<package name="org.jgrapht.*" />
+			<package name="org.jgraph.*" />
+			<package name="net.antonioshome.swing.treewrapper.*" />
 			<package name="org.w3c.*" />
 			<package name="org.objectweb.*" />
 			<package name="junit.framework.*" />

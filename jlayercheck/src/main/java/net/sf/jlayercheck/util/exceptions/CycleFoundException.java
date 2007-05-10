@@ -1,4 +1,4 @@
-package net.sf.jlayercheck.gui;
+package net.sf.jlayercheck.util.exceptions;
 
 /**
  * Thrown by GraphModuleDependencies when the input graph

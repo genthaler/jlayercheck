@@ -9,6 +9,9 @@ import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
 
+import net.sf.jlayercheck.util.exceptions.CycleFoundException;
+import net.sf.jlayercheck.util.graph.GraphModuleDependencies;
+
 import junit.framework.TestCase;
 
 public class GraphModuleDependenciesTest extends TestCase {
