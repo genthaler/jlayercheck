@@ -1,6 +1,6 @@
 package net.sf.jlayercheck;
 
-import net.sf.jlayercheck.DependencyParser;
+import net.sf.jlayercheck.util.DependencyParser;
 import net.sf.jlayercheck.util.DependencyVisitor;
 import junit.framework.TestCase;
 

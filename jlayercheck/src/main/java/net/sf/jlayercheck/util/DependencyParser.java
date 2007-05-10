@@ -1,4 +1,4 @@
-package net.sf.jlayercheck;
+package net.sf.jlayercheck.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,7 +8,6 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import net.sf.jlayercheck.util.DependencyVisitor;
 
 import org.objectweb.asm.ClassReader;
 

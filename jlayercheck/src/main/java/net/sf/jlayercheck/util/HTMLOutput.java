@@ -61,8 +61,8 @@ public class HTMLOutput {
 
 		Set<String> unspecifiedPackages;
 		try {
-			unspecifiedPackages = dv.getUnspecifiedPackages(xcp);
-			Map<String, Map<String, ClassDependency>> unallowedDependencies = dv.getUnallowedDependencies(xcp); 
+			unspecifiedPackages = xcp.getUnspecifiedPackages(dv.getDependencies());
+			Map<String, Map<String, ClassDependency>> unallowedDependencies = xcp.getUnallowedDependencies(dv.getDependencies()); 
 
 			// copy images to destination directory
 			copyImage("/error.png", "images/error.png", outputDir);
@@ -121,7 +121,7 @@ public class HTMLOutput {
 		for(String packagename : dv.getPackages().keySet()) {
 			boolean wrotePackageHeader = false;
 			for(String classname : dv.getPackages().get(packagename)) {
-				String classPackageName = DependencyVisitor.getPackageName(classname);
+				String classPackageName = StringUtils.getPackageName(classname);
 				String classmodule = xcp.getMatchingModule(classname);
 
 				if (unallowedDependencies.get(classname) != null) {
@@ -137,7 +137,7 @@ public class HTMLOutput {
 					pw.println("<ul>");
 					Map<Integer, String> markedLines = new TreeMap<Integer, String>();
 					for(String dependency : unallowedDependencies.get(classname).keySet()) {
-						String dependencyPackageName = DependencyVisitor.getPackageName(dependency);
+						String dependencyPackageName = StringUtils.getPackageName(dependency);
 
 						String dependencymodule = xcp.getPackageModules().get(dependencyPackageName);
 
@@ -176,7 +176,7 @@ public class HTMLOutput {
 		pw.println("<h1><img src=\"images/class.png\" /> Orphaned classes:</h1>");
 		pw.println("<ul>");
 		try {
-			orphanedClasses = xcp.getOrphanedClasses(dv);
+			orphanedClasses = xcp.getOrphanedClasses(dv.getDependencies());
 			for(String classname : orphanedClasses) {
 				pw.println("<li>" + formatPackageName(classname) + "</li>");
 			}

@@ -3,11 +3,9 @@ package net.sf.jlayercheck.util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
-import net.sf.jlayercheck.util.model.ClassDependency;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
@@ -20,9 +18,9 @@ import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.signature.SignatureVisitor;
 
 /**
- * DependencyVisitor (based on an example class from the ASM package).
- * 
- * @author Eugene Kuleshov
+ * This class is a simple visitor object that collects all dependency information
+ * for the given classes. The collected information can be retrieved by calling
+ * {@link #getDependencies()} and {{@link #getPackages()}. 
  */
 public class DependencyVisitor implements
         AnnotationVisitor,
@@ -56,8 +54,8 @@ public class DependencyVisitor implements
     }
 
     /**
-     * Returns a Map containing package names as keys and another Map
-     * as values. This second Map contains class names that belong to
+     * Returns a Map containing package names as keys and another Set
+     * as values. This second Set contains class names that belong to
      * the given package.
      *   
      * @return
@@ -388,7 +386,7 @@ public class DependencyVisitor implements
 
     protected String getGroupKey(String name) {
     	// retrieve the package name
-    	String packagename = getPackageName(name);
+    	String packagename = StringUtils.getPackageName(name);
         
         // add this class to the package
         Set<String> packageclasses = packages.get(packagename);
@@ -400,24 +398,6 @@ public class DependencyVisitor implements
         
         return name;
     }
-
-    /**
-     * Returns the package name part of the given class name. E.g.
-     * if the given classname is "java/lang/System", it returns "java/lang".
-     * 
-     * @param classname
-     * @return
-     */
-    public static String getPackageName(String classname) {
-    	String packagename = "";
-    	
-        int n = classname.lastIndexOf('/');
-        if (n > -1) {
-            packagename = classname.substring(0, n);
-        }
-        
-        return packagename;
-	}
 
 	protected void addName(final String name) {
         if (name == null) {
@@ -472,81 +452,5 @@ public class DependencyVisitor implements
 //        	if (currentClass.indexOf("HTMLOutput")>0) System.out.println("Type signature: "+signature+" line: "+currentLineNumber);
             new SignatureReader(signature).acceptType(this);
         }
-    }
-    
-    /**
-     * Returns a list of packages that are not assigned to
-     * a module in the given configuration.
-     * 
-     * @param xcp
-     * @return
-     * @throws OverlappingModulesDefinitionException 
-     */
-    public Set<String> getUnspecifiedPackages(XMLConfigurationParser xcp) throws OverlappingModulesDefinitionException {
-		Set<String> unspecifiedPackages = new TreeSet<String>();
-		
-		for(String classname : getDependencies().keySet()) {
-			String classPackageName = DependencyVisitor.getPackageName(classname);
-			
-			// check if packagename is an allowed dependency for classname
-			String classmodule = xcp.getMatchingModule(classPackageName+"/Dummy");
-
-			if (classmodule == null) {
-				unspecifiedPackages.add(classPackageName);
-			}
-		}
-		
-		return unspecifiedPackages;
-    }
-    
-    /**
-     * Returns a map containing the dependencies (from class, to class) that
-     * are not allowed by the rules.
-     * 
-     * @param xcp the configuration to use
-     * @return
-     * @throws OverlappingModulesDefinitionException 
-     */
-    public Map<String, Map<String, ClassDependency>> getUnallowedDependencies(XMLConfigurationParser xcp) throws OverlappingModulesDefinitionException {
-		Map<String, Map<String, ClassDependency>> unallowedDependencies = new TreeMap<String, Map<String, ClassDependency>>();
-		
-		for(String classname : getDependencies().keySet()) {
-			String classPackageName = DependencyVisitor.getPackageName(classname);
-			for(String dependency : getDependencies().get(classname).keySet()) {
-				String dependencyPackageName = DependencyVisitor.getPackageName(dependency);
-				
-				// check if packagename is an allowed dependency for classname
-				String classmodule = xcp.getMatchingModule(classname);
-				String dependencymodule = xcp.getMatchingModule(dependency);
-				
-				if (classmodule == null) {
-					// unspecified package
-				} else {
-					if (!classmodule.equals(dependencymodule)) {
-						if (!(xcp.isExcluded(classname) || xcp.isExcluded(dependency))) {
-							if (xcp.getModuleDependencies().get(classmodule) == null || dependencymodule == null || 
-									!xcp.getModuleDependencies().get(classmodule).contains(dependencymodule)) {
-
-								Map<String, ClassDependency> depList = unallowedDependencies.get(classname);
-								if (depList == null) {
-									depList = new TreeMap<String, ClassDependency>();
-									unallowedDependencies.put(classname, depList);
-								}
-								ClassDependency cd = depList.get(dependency);
-								if (cd == null) {
-									cd = new ClassDependency(dependency);
-									depList.put(dependency, cd);
-								}
-								for(Integer lineNumber : getDependencies().get(classname).get(dependency)) {
-									cd.addLineNumber(lineNumber);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		return unallowedDependencies;
     }
 }

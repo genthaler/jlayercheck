@@ -20,6 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.sf.jlayercheck.util.exceptions.ConfigurationException;
 import net.sf.jlayercheck.util.exceptions.OrphanedSearchException;
 import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
+import net.sf.jlayercheck.util.model.ClassDependency;
 import net.sf.jlayercheck.util.model.ClassSource;
 import net.sf.jlayercheck.util.model.FilesystemClassSource;
 
@@ -346,6 +347,13 @@ public class XMLConfigurationParser {
 		return false;
 	}
 
+	/**
+	 * Used internally to convert a string from the wildcard format used
+	 * in the configuration file into a regular expression.
+	 * 
+	 * @param wildcardstring
+	 * @return wildcardstring converted to regular expression
+	 */
 	protected String convertToRegularExpression(String wildcardstring) {
 		wildcardstring = wildcardstring.replaceAll("\\.", "/");
 //		wildcardstring = wildcardstring.replaceAll("/\\*[^\\*]", "/[^\\.]*");
@@ -354,6 +362,12 @@ public class XMLConfigurationParser {
 	}
 
     /**
+     * Returns a Set of classes that are named as entry classes in the
+     * configuration file. These classes are points where the execution
+     * of the system can start. All classes that are directly or indirectly
+     * referenced from these named entry classes are marked as used, all
+     * others are marked as unused/orphaned. 
+     * 
      * @return the entryClasses
      */
     public Set<String> getEntryClasses() {
@@ -367,7 +381,7 @@ public class XMLConfigurationParser {
      * @param dv the dependency data to use
      * @throws OrphanedSearchException 
      */
-    public Set<String> getOrphanedClasses(DependencyVisitor dv) throws OrphanedSearchException {
+    public Set<String> getOrphanedClasses(Map<String, Map<String, Set<Integer>>> dependencies) throws OrphanedSearchException {
         Set<String> visitedClasses = new HashSet<String>();
         
         // add the entry points
@@ -377,14 +391,14 @@ public class XMLConfigurationParser {
         Set<String> unvisited = null;
         Map<String, URL> allClassSources = getAllClassSources();
         do {
-            unvisited = getUnvisitedDependendClasses(visitedClasses, dv, allClassSources);
+            unvisited = getUnvisitedDependendClasses(visitedClasses, dependencies, allClassSources);
             visitedClasses.addAll(unvisited);
         } while(unvisited.size()>0);
         
         // find the missing classes and return them as orphaned
         Set<String> orphanedClasses = new TreeSet<String>();
         
-        for(String classname : dv.getDependencies().keySet()) {
+        for(String classname : dependencies.keySet()) {
             if (!visitedClasses.contains(classname)) {
                 orphanedClasses.add(classname);
             }
@@ -403,12 +417,12 @@ public class XMLConfigurationParser {
      * @return Set containing class names
      * @throws OrphanedSearchException 
      */
-    protected Set<String> getUnvisitedDependendClasses(Set<String> visitedClasses, DependencyVisitor dv, Map<String, URL> allClassSources) throws OrphanedSearchException {
+    protected Set<String> getUnvisitedDependendClasses(Set<String> visitedClasses, Map<String, Map<String, Set<Integer>>> dependencies, Map<String, URL> allClassSources) throws OrphanedSearchException {
         Set<String> result = new HashSet<String>();
         
         for(String visitedClass : visitedClasses) {
-            if (dv.getDependencies().get(visitedClass) != null) {
-                for(String classname : dv.getDependencies().get(visitedClass).keySet()) {
+            if (dependencies.get(visitedClass) != null) {
+                for(String classname : dependencies.get(visitedClass).keySet()) {
                     if (!visitedClasses.contains(classname)) {
                         result.add(classname);
                     }
@@ -424,5 +438,81 @@ public class XMLConfigurationParser {
         }
         
         return result;
+    }
+    
+    /**
+     * Returns a map containing the dependencies (from class, to class) that
+     * are not allowed by the rules.
+     * 
+     * @param xcp the configuration to use
+     * @return
+     * @throws OverlappingModulesDefinitionException 
+     */
+    public Map<String, Map<String, ClassDependency>> getUnallowedDependencies(Map<String, Map<String, Set<Integer>>> dependencies) throws OverlappingModulesDefinitionException {
+		Map<String, Map<String, ClassDependency>> unallowedDependencies = new TreeMap<String, Map<String, ClassDependency>>();
+		
+		for(String classname : dependencies.keySet()) {
+			String classPackageName = StringUtils.getPackageName(classname);
+			for(String dependency : dependencies.get(classname).keySet()) {
+				String dependencyPackageName = StringUtils.getPackageName(dependency);
+				
+				// check if packagename is an allowed dependency for classname
+				String classmodule = getMatchingModule(classname);
+				String dependencymodule = getMatchingModule(dependency);
+				
+				if (classmodule == null) {
+					// unspecified package
+				} else {
+					if (!classmodule.equals(dependencymodule)) {
+						if (!(isExcluded(classname) || isExcluded(dependency))) {
+							if (getModuleDependencies().get(classmodule) == null || dependencymodule == null || 
+									!getModuleDependencies().get(classmodule).contains(dependencymodule)) {
+
+								Map<String, ClassDependency> depList = unallowedDependencies.get(classname);
+								if (depList == null) {
+									depList = new TreeMap<String, ClassDependency>();
+									unallowedDependencies.put(classname, depList);
+								}
+								ClassDependency cd = depList.get(dependency);
+								if (cd == null) {
+									cd = new ClassDependency(dependency);
+									depList.put(dependency, cd);
+								}
+								for(Integer lineNumber : dependencies.get(classname).get(dependency)) {
+									cd.addLineNumber(lineNumber);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return unallowedDependencies;
+    }
+    
+    /**
+     * Returns a list of packages that are not assigned to
+     * a module in the given configuration.
+     * 
+     * @param xcp
+     * @return
+     * @throws OverlappingModulesDefinitionException 
+     */
+    public Set<String> getUnspecifiedPackages(Map<String, Map<String, Set<Integer>>> dependencies) throws OverlappingModulesDefinitionException {
+		Set<String> unspecifiedPackages = new TreeSet<String>();
+		
+		for(String classname : dependencies.keySet()) {
+			String classPackageName = StringUtils.getPackageName(classname);
+			
+			// check if packagename is an allowed dependency for classname
+			String classmodule = getMatchingModule(classPackageName+"/Dummy");
+
+			if (classmodule == null) {
+				unspecifiedPackages.add(classPackageName);
+			}
+		}
+		
+		return unspecifiedPackages;
     }
 }

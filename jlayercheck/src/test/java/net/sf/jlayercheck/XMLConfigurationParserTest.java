@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 import net.sf.jlayercheck.util.DependencyVisitor;
+import net.sf.jlayercheck.util.StringUtils;
 import net.sf.jlayercheck.util.XMLConfigurationParser;
 import net.sf.jlayercheck.util.model.ClassDependency;
 
@@ -35,12 +36,12 @@ public class XMLConfigurationParserTest extends TestCase {
 		// test if the ClassSource correctly implements calling a DependencyVisitor
 		DependencyVisitor dv = new DependencyVisitor();
 		xcp.getClassSources().get(0).call(dv);
-		assertTrue(dv.getPackages().containsKey("net/sf/jlayercheck"));
+		assertTrue(dv.getPackages().containsKey("net/sf/jlayercheck/util"));
 
 		// test if the java sources are correctly loaded
 		Map<String, URL> javaSources = new TreeMap<String, URL>();
 		javaSources.putAll(xcp.getClassSources().get(0).getSourceFiles());
-		assertTrue(javaSources.containsKey("net/sf/jlayercheck/DependencyParser"));
+		assertTrue(javaSources.containsKey("net/sf/jlayercheck/util/DependencyParser"));
 	}
 	
 	/**
@@ -57,8 +58,8 @@ public class XMLConfigurationParserTest extends TestCase {
 		Map<String, URL> javaSources = new TreeMap<String, URL>();
 		javaSources.putAll(xcp.getClassSources().get(0).getSourceFiles());
 
-		Set<String> unspecifiedPackages = dv.getUnspecifiedPackages(xcp);
-		Map<String, Map<String, ClassDependency>> unallowedDependencies = dv.getUnallowedDependencies(xcp); 
+		Set<String> unspecifiedPackages = xcp.getUnspecifiedPackages(dv.getDependencies());
+		Map<String, Map<String, ClassDependency>> unallowedDependencies = xcp.getUnallowedDependencies(dv.getDependencies()); 
 		
 		// find violations
 		
@@ -68,8 +69,8 @@ public class XMLConfigurationParserTest extends TestCase {
 		
 		for(String classname : unallowedDependencies.keySet()) {
 			for(String dependency : unallowedDependencies.get(classname).keySet()) {
-				String classPackageName = DependencyVisitor.getPackageName(classname);
-				String dependencyPackageName = DependencyVisitor.getPackageName(dependency);
+				String classPackageName = StringUtils.getPackageName(classname);
+				String dependencyPackageName = StringUtils.getPackageName(dependency);
 
 				String classmodule = xcp.getPackageModules().get(classPackageName);
 				String dependencymodule = xcp.getPackageModules().get(dependencyPackageName);
