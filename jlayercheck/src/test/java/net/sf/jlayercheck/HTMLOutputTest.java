@@ -1,5 +1,6 @@
 package net.sf.jlayercheck;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
@@ -25,5 +26,8 @@ public class HTMLOutputTest extends TestCase {
 
 		HTMLOutput html = new HTMLOutput("target/tmp");
 		html.write(dv, xcp);
+		
+		assertTrue(new File("target/tmp/unspecified.html").exists());
+		assertTrue(new File("target/tmp/violations.html").exists());
 	}
 }

@@ -14,8 +14,18 @@ import net.sf.jlayercheck.util.graph.GraphModuleDependencies;
 
 import junit.framework.TestCase;
 
+/**
+ * Tests the class that generates the module hierarchy graphic.
+ * 
+ * @author webmaster@earth3d.org
+ */
 public class GraphModuleDependenciesTest extends TestCase {
 
+	/**
+	 * Checks the cycle detection of the JGraphT library.
+	 * 
+	 * @throws Exception
+	 */
 	public void testCycleException() throws Exception {
     	Map<String, Set<String>> testmap = new TreeMap<String, Set<String>>();
     	

@@ -1,5 +1,6 @@
 package net.sf.jlayercheck;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
@@ -31,5 +32,8 @@ public class CheckOwnArchitectureTest extends TestCase {
 
 		HTMLOutput html = new HTMLOutput("target/tmp_jlayercheck");
 		html.write(dv, xcp);
+		
+		assertTrue(new File("target/tmp_jlayercheck/unspecified.html").exists());
+		assertTrue(new File("target/tmp_jlayercheck/violations.html").exists());
 	}
 }
