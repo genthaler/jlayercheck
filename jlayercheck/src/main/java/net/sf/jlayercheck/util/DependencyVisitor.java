@@ -1,6 +1,7 @@
 package net.sf.jlayercheck.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -11,6 +12,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.signature.SignatureVisitor;
@@ -32,6 +34,8 @@ public class DependencyVisitor implements
     protected Map<String, Map<String, Set<Integer>>> classDependencies = new HashMap<String, Map<String, Set<Integer>>>();
 
     protected String currentClass;
+    
+    protected Map<String, Set<MethodCall>> constructorCalls = new HashMap<String, Set<MethodCall>>();
     
     /**
      * Contains the dependencies for the current class.
@@ -168,6 +172,10 @@ public class DependencyVisitor implements
 
     public void visitTypeInsn(final int opcode, final String desc) {
 //    	if (currentClass.indexOf("HTMLOutput")>0) System.out.println("TypeInsn: "+desc);
+    	if (opcode == Opcodes.NEW) {
+    		addConstuctorCall(desc);
+    	}
+    	
         if (desc.charAt(0) == '[') {
             addDesc(desc);
         } else {
@@ -175,7 +183,25 @@ public class DependencyVisitor implements
         }
     }
 
-    public void visitFieldInsn(
+    /**
+     * Called when a "new" command is found. Useful to see where implementations are needed
+     * and where interfaces can replace a reference.
+     * 
+     * @param desc
+     */
+    protected void addConstuctorCall(String desc) {
+    	Set<MethodCall> methodCallList = constructorCalls.get(currentClass);
+    	
+    	if (methodCallList == null) {
+    		methodCallList = new HashSet<MethodCall>();
+    		constructorCalls.put(currentClass, methodCallList);
+    	}
+    	
+    	methodCallList.add(new MethodCall(desc, null, MethodCall.Type.CONSTRUCTOR, currentLineNumber));
+//    	System.out.println("Add constructor call to "+desc+" from "+currentClass);
+	}
+
+	public void visitFieldInsn(
         final int opcode,
         final String owner,
         final String name,
@@ -451,4 +477,14 @@ public class DependencyVisitor implements
             new SignatureReader(signature).acceptType(this);
         }
     }
+
+    /**
+     * Returns a Map of class -> constructor calls. Can be used to determine
+     * where implementations are needed and where an interface would be sufficient.
+     * 
+     * @return Map class -> constructor calls
+     */
+	public Map<String, Set<MethodCall>> getConstructorCalls() {
+		return constructorCalls;
+	}
 }
