@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.sf.jlayercheck.uti.modeltreel.DefaultModelTree;
+import net.sf.jlayercheck.uti.modeltreel.ModelTree;
 import net.sf.jlayercheck.util.exceptions.ConfigurationException;
 import net.sf.jlayercheck.util.exceptions.OrphanedSearchException;
 import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
@@ -325,6 +327,12 @@ public class XMLConfigurationParser {
         return result;
     }
 
+    /**
+     * Returns all package entries that are specified to exclude
+     * in the configuration file.
+     * 
+     * @return
+     */
 	public Set<String> getExcludeList() {
 		return excludeList;
 	}
@@ -514,5 +522,13 @@ public class XMLConfigurationParser {
 		}
 		
 		return unspecifiedPackages;
+    }
+    
+    public ModelTree getModelTree() {
+    	ModelTree result = new DefaultModelTree();
+    	
+    	// build ModelTree
+    	
+    	return result;
     }
 }
