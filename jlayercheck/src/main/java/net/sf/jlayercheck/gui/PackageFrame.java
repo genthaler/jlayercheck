@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 
 import net.antonioshome.swing.treewrapper.DnDVetoException;
 import net.antonioshome.swing.treewrapper.TreeTreeDnDEvent;
@@ -19,6 +18,11 @@ import net.antonioshome.swing.treewrapper.TreeWrapper;
  * @author webmaster@earth3d.org
  */
 public class PackageFrame extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8443924981257381579L;
 
 	public PackageFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

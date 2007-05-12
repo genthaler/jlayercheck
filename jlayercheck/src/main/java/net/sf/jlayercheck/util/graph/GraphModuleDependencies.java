@@ -16,14 +16,8 @@ import javax.swing.JPanel;
 import net.sf.jlayercheck.util.exceptions.CycleFoundException;
 
 import org.jgraph.JGraph;
-import org.jgraph.plugins.layouts.AnnealingLayoutAlgorithm;
-import org.jgraph.plugins.layouts.CircleGraphLayout;
-import org.jgraph.plugins.layouts.GEMLayoutAlgorithm;
 import org.jgraph.plugins.layouts.JGraphLayoutAlgorithm;
-import org.jgraph.plugins.layouts.OrderedTreeLayoutAlgorithm;
-import org.jgraph.plugins.layouts.RadialTreeLayoutAlgorithm;
 import org.jgraph.plugins.layouts.SugiyamaLayoutAlgorithm;
-import org.jgraph.plugins.layouts.TreeLayoutAlgorithm;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DefaultEdge;
@@ -31,6 +25,10 @@ import org.jgrapht.graph.ListenableDirectedGraph;
 
 public class GraphModuleDependencies extends JApplet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5249185186644485494L;
 	private JGraphModelAdapter m_jgAdapter;
 	protected JGraph jgraph;
 

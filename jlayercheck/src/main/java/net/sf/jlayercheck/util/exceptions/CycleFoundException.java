@@ -8,6 +8,11 @@ package net.sf.jlayercheck.util.exceptions;
  */
 public class CycleFoundException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5360564935723981975L;
+
 	public CycleFoundException() {
 		
 	}

@@ -1,18 +1,14 @@
 package net.sf.jlayercheck.gui;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javax.imageio.ImageIO;
-
+import junit.framework.TestCase;
 import net.sf.jlayercheck.util.exceptions.CycleFoundException;
 import net.sf.jlayercheck.util.graph.GraphModuleDependencies;
-
-import junit.framework.TestCase;
 
 /**
  * Tests the class that generates the module hierarchy graphic.

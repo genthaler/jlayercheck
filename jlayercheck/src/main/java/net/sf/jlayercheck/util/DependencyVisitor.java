@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
-
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
