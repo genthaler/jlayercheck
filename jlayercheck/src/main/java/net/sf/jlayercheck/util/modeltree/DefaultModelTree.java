@@ -1,4 +1,4 @@
-package net.sf.jlayercheck.uti.modeltreel;
+package net.sf.jlayercheck.util.modeltree;
 
 import java.util.Vector;
 
@@ -21,6 +21,24 @@ public class DefaultModelTree extends DefaultMutableTreeNode implements ModelTre
 	}
 
 	public Vector<ModuleNode> getModules() {
-		return (Vector<ModuleNode>) children();
+		return (Vector<ModuleNode>) children;
+	}
+
+	/**
+	 * Searches for the ModuleNode with the given name.
+	 * 
+	 * @param modulename
+	 * @return
+	 */
+	public ModuleNode getModule(String modulename) {
+		if (getModules() == null) return null;
+		
+		for(ModuleNode node : getModules()) {
+			if (node.getModuleName().equals(modulename)) {
+				return node;
+			}
+		}
+		
+		return null;
 	}
 }

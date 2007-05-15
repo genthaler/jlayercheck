@@ -1,4 +1,4 @@
-package net.sf.jlayercheck.uti.modeltreel;
+package net.sf.jlayercheck.util.modeltree;
 
 import java.util.Vector;
 
@@ -16,11 +16,40 @@ public class DefaultModuleNode extends DefaultMutableTreeNode implements ModuleN
 	 */
 	private static final long serialVersionUID = -1419905413709544489L;
 
-	public DefaultModuleNode() {
+	protected String moduleName;
+	
+	public DefaultModuleNode(String moduleName) {
+		assert(moduleName != null);
+		
+		this.moduleName = moduleName; 
+		
 		setAllowsChildren(true);
 	}
 
 	public Vector<PackageNode> getPackages() {
 		return (Vector<PackageNode>) children();
+	}
+
+	/**
+	 * Returns the name of this module.
+	 */
+	public String getModuleName() {
+		return moduleName;
+	}
+
+	/**
+	 * Adds the given package node as child.
+	 */
+	public void add(PackageNode packagenode) {
+		super.add(packagenode);
+	}
+	
+	public String toString() {
+		return getModuleName();
+	}
+
+	@Override
+	public boolean isLeaf() {
+		return false;
 	}
 }
