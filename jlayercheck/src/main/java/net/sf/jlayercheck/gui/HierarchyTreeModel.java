@@ -7,9 +7,9 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import net.sf.jlayercheck.uti.modeltreel.ModelTree;
 import net.sf.jlayercheck.util.DependencyParser;
 import net.sf.jlayercheck.util.XMLConfigurationParser;
+import net.sf.jlayercheck.util.modeltree.ModelTree;
 
 /**
  * Offers a TreeModel interface to the model-package-class

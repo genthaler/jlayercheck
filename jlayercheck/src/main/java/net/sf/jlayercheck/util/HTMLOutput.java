@@ -116,6 +116,19 @@ public class HTMLOutput {
 		}
 	}
 
+	/**
+	 * Writes a list of dependency violations to the given PrintWriter using html.
+	 * It shows the classes that violate the architecture by accessing a module
+	 * which they are not allowed to access.
+	 * 
+	 * @param dv
+	 * @param xcp
+	 * @param pw
+	 * @param unallowedDependencies
+	 * @param sourceFiles
+	 * @throws IOException
+	 * @throws OverlappingModulesDefinitionException
+	 */
 	protected void writeDependencyViolations(DependencyVisitor dv, XMLConfigurationParser xcp, PrintWriter pw, Map<String, Map<String, ClassDependency>> unallowedDependencies, Map<String, URL> sourceFiles) throws IOException, OverlappingModulesDefinitionException {
 		pw.println("<h1>Dependency violations by packages:</h1>");
 		for(String packagename : dv.getPackages().keySet()) {

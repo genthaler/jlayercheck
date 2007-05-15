@@ -17,14 +17,18 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.sf.jlayercheck.uti.modeltreel.DefaultModelTree;
-import net.sf.jlayercheck.uti.modeltreel.ModelTree;
 import net.sf.jlayercheck.util.exceptions.ConfigurationException;
 import net.sf.jlayercheck.util.exceptions.OrphanedSearchException;
 import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
 import net.sf.jlayercheck.util.model.ClassDependency;
 import net.sf.jlayercheck.util.model.ClassSource;
 import net.sf.jlayercheck.util.model.FilesystemClassSource;
+import net.sf.jlayercheck.util.modeltree.DefaultClassNode;
+import net.sf.jlayercheck.util.modeltree.DefaultModelTree;
+import net.sf.jlayercheck.util.modeltree.DefaultModuleNode;
+import net.sf.jlayercheck.util.modeltree.DefaultPackageNode;
+import net.sf.jlayercheck.util.modeltree.ModelTree;
+import net.sf.jlayercheck.util.modeltree.ModuleNode;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -524,11 +528,57 @@ public class XMLConfigurationParser {
 		return unspecifiedPackages;
     }
     
-    public ModelTree getModelTree() {
-    	ModelTree result = new DefaultModelTree();
+    /**
+     * Builds a model that contains all dependency information that was retrieved
+     * from the class files. It can be used for displaying the dependencies in a 
+     * tree view.
+     * 
+     * @param dv
+     * @return
+     * @throws OverlappingModulesDefinitionException
+     */
+    public ModelTree getModelTree(DependencyVisitor dv) throws OverlappingModulesDefinitionException {
+    	DefaultModelTree result = new DefaultModelTree();
     	
     	// build ModelTree
+    	for(String packagename : dv.getPackages().keySet()) {
+
+    		// get the module for this package
+			String packagemodule = getMatchingModule(packagename+"/Dummy");
+			
+			if (packagemodule == null) {
+				packagemodule = "unassigned";
+			}
+			
+			ModuleNode module = result.getModule(packagemodule);
+			
+			if (module == null) {
+				module = new DefaultModuleNode(packagemodule);
+				result.add(module);
+			}
+			
+			// add the new package node
+    		DefaultPackageNode packagenode = new DefaultPackageNode(packagename);
+			module.add(packagenode);
+
+    		for(String classname : dv.getPackages().get(packagename)) {
+    			// add class nodes for all packages
+    			packagenode.add(new DefaultClassNode(classname));
+    		}
+    	}
     	
+    	// add dependency violations
+//		Map<String, Map<String, ClassDependency>> unallowedDependencies = getUnallowedDependencies(dv.getDependencies()); 
+//		for(String packagename : dv.getPackages().keySet()) {
+//			for(String classname : dv.getPackages().get(packagename)) {
+//				String classPackageName = StringUtils.getPackageName(classname);
+//				String classmodule = getMatchingModule(classname);
+//
+//				if (unallowedDependencies.get(classname) != null) {
+//					
+//				}
+//			}
+//		}
     	return result;
     }
 }

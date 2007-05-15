@@ -1,4 +1,4 @@
-package net.sf.jlayercheck.uti.modeltreel;
+package net.sf.jlayercheck.util.modeltree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -14,7 +14,19 @@ public class DefaultClassNode extends DefaultMutableTreeNode implements ClassNod
 	 */
 	private static final long serialVersionUID = -478278521385757708L;
 
-	public DefaultClassNode() {
+	protected String classname;
+	
+	public DefaultClassNode(String classname) {
+		this.classname = classname;
+		
 		setAllowsChildren(false);
+	}
+
+	public String getClassname() {
+		return classname;
+	}
+	
+	public String toString() {
+		return getClassname().replace("/", ".");
 	}
 }

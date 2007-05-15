@@ -1,8 +1,8 @@
-package net.sf.jlayercheck.uti.modeltreel;
+package net.sf.jlayercheck.util.modeltree;
 
 import java.util.Vector;
 
-import javax.swing.tree.TreeNode;
+import javax.swing.tree.MutableTreeNode;
 
 
 /**
@@ -10,6 +10,6 @@ import javax.swing.tree.TreeNode;
  * 
  * @author webmaster@earth3d.org
  */
-public interface PackageNode extends TreeNode {
+public interface PackageNode extends MutableTreeNode {
 	public Vector<ClassNode> getClasses();
 }

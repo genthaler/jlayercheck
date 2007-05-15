@@ -1,4 +1,4 @@
-package net.sf.jlayercheck.uti.modeltreel;
+package net.sf.jlayercheck.util.modeltree;
 
 import java.util.Vector;
 
@@ -11,6 +11,15 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class DefaultPackageNode extends DefaultMutableTreeNode implements PackageNode {
 
+	protected String packagename;
+	
+	public DefaultPackageNode(String packagename) {
+		super();
+		
+		this.packagename = packagename;
+		setAllowsChildren(true);
+	}
+		
 	/**
 	 * 
 	 */
@@ -22,5 +31,13 @@ public class DefaultPackageNode extends DefaultMutableTreeNode implements Packag
 
 	public Vector<ClassNode> getClasses() {
 		return (Vector<ClassNode>) children();
+	}
+
+	public String getPackagename() {
+		return packagename;
+	}
+	
+	public String toString() {
+		return getPackagename().replace("/", ".");
 	}
 }
