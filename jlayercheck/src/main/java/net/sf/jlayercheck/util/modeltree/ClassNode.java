@@ -1,4 +1,4 @@
-package net.sf.jlayercheck.util.modeltree;
+package net.sf.jlayercheck.uti.modeltreel;
 
 import javax.swing.tree.TreeNode;
 

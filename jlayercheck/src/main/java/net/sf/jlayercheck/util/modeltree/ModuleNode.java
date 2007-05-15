@@ -1,28 +1,14 @@
-package net.sf.jlayercheck.util.modeltree;
+package net.sf.jlayercheck.uti.modeltreel;
 
 import java.util.Vector;
 
-import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 /**
  * Describes a module that can contain java packages.
  * 
  * @author webmaster@earth3d.org
  */
-public interface ModuleNode extends MutableTreeNode {
+public interface ModuleNode extends TreeNode {
 	public Vector<PackageNode> getPackages();
-
-	/**
-	 * Returns the name of this module.
-	 * 
-	 * @return modulename
-	 */
-	public String getModuleName();
-
-	/**
-	 * Adds the given packageNode as child.
-	 * 
-	 * @param packagenode
-	 */
-	public void add(PackageNode packagenode);
 }
