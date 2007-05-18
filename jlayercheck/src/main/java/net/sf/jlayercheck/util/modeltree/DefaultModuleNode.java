@@ -52,4 +52,8 @@ public class DefaultModuleNode extends DefaultMutableTreeNode implements ModuleN
 	public boolean isLeaf() {
 		return false;
 	}
+
+	public String getName() {
+		return getModuleName();
+	}
 }

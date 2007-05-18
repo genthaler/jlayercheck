@@ -1,14 +1,19 @@
 package net.sf.jlayercheck.gui;
 
+import java.awt.FlowLayout;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.xml.parsers.ParserConfigurationException;
@@ -21,6 +26,7 @@ import net.sf.jlayercheck.util.DependencyVisitor;
 import net.sf.jlayercheck.util.XMLConfigurationParser;
 import net.sf.jlayercheck.util.exceptions.ConfigurationException;
 import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
+import net.sf.jlayercheck.util.model.ClassDependency;
 import net.sf.jlayercheck.util.model.ClassSource;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
 import net.sf.jlayercheck.util.modeltree.ModuleNode;
@@ -35,13 +41,16 @@ import org.xml.sax.SAXException;
  *  
  * @author webmaster@earth3d.org
  */
-public class PackageFrame extends JFrame {
+public class PackageFrame extends JFrame implements TreeSelectionListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8443924981257381579L;
 
+	protected JList list;
+	protected DefaultListModel listModel = new DefaultListModel();
+	
 	public PackageFrame() throws IOException, SAXException, ParserConfigurationException, ConfigurationException, OverlappingModulesDefinitionException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("JLayerCheck - jlayercheck.sf.net");
@@ -57,27 +66,19 @@ public class PackageFrame extends JFrame {
             javaSources.putAll(source.getSourceFiles());
         }
 
-//		DefaultMutableTreeNode p1,p2,p3;
-//		DefaultMutableTreeNode treeroot = new DefaultMutableTreeNode("Root");
-//		treeroot.add(p1 = new DefaultMutableTreeNode("package1"));
-//		treeroot.add(p2 = new DefaultMutableTreeNode("package2"));
-//		treeroot.add(p3 = new DefaultMutableTreeNode("package3"));
-//		
-//		p1.add(new DefaultMutableTreeNode("class1"));
-//		p1.add(new DefaultMutableTreeNode("class2"));
-//		p2.add(new DefaultMutableTreeNode("class3"));
-//		p2.add(new DefaultMutableTreeNode("class4"));
-//		p3.add(new DefaultMutableTreeNode("class5j"));
-		
-//		DefaultTreeModel treemodel = new DefaultTreeModel(treeroot);
-
 		DefaultTreeModel treemodel = new DefaultTreeModel(xcp.getModelTree(dv));
 
+		getContentPane().setLayout(new FlowLayout());
+		
 		JTree testtree = new JTree();
 		testtree.setModel(treemodel);
 		JScrollPane scroll = new JScrollPane(testtree);
 		getContentPane().add(scroll);
 		TreeWrapper tw = new TreeWrapper(testtree);
+		testtree.getSelectionModel().addTreeSelectionListener(this);
+		list = new JList();
+		list.setModel(listModel);
+		getContentPane().add(list);
 		
 		tw.addTreeTreeDnDListener(new TreeTreeDnDListener() {
 		
@@ -112,5 +113,20 @@ public class PackageFrame extends JFrame {
 	 */
 	public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException, ConfigurationException, OverlappingModulesDefinitionException {
 		new PackageFrame().setVisible(true);
+	}
+
+	public void valueChanged(TreeSelectionEvent e) {
+		if (e.getNewLeadSelectionPath() != null) {
+			Object selected = e.getNewLeadSelectionPath().getLastPathComponent();
+
+			if (selected instanceof ClassNode) {
+				listModel.clear();
+
+				ClassNode cn = (ClassNode) selected;
+				for(ClassDependency cd : cn.getClassDependencies()) {
+					listModel.addElement(cd.getDependency());
+				}
+			}
+		}
 	}
 }

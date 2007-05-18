@@ -12,6 +12,11 @@ import net.sf.jlayercheck.util.HTMLOutput;
 import net.sf.jlayercheck.util.XMLConfigurationParser;
 import net.sf.jlayercheck.util.model.ClassSource;
 
+/**
+ * Tests if the html output is generated correctly for an example configuration.
+ *  
+ * @author webmaster@earth3d.org
+ */
 public class HTMLOutputTest extends TestCase {
 	public void testWrite() throws Exception {
 		// load and parse configuration, class and java files

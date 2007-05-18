@@ -40,4 +40,8 @@ public class DefaultPackageNode extends DefaultMutableTreeNode implements Packag
 	public String toString() {
 		return getPackagename().replace("/", ".");
 	}
+
+	public String getName() {
+		return getPackagename();
+	}
 }

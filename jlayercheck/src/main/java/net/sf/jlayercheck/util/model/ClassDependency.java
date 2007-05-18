@@ -28,4 +28,8 @@ public class ClassDependency {
 	public Set<Integer> getLineNumbers() {
 		return lineNumbers;
 	}
+
+	public String getDependency() {
+		return dependency;
+	}
 }

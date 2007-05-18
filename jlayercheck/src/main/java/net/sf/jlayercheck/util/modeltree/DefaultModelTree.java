@@ -1,8 +1,13 @@
 package net.sf.jlayercheck.util.modeltree;
 
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
+
+import org.apache.commons.collections.iterators.EnumerationIterator;
 
 /**
  * @see ModelTree
@@ -36,6 +41,44 @@ public class DefaultModelTree extends DefaultMutableTreeNode implements ModelTre
 		for(ModuleNode node : getModules()) {
 			if (node.getModuleName().equals(modulename)) {
 				return node;
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Returns the first ClassNode node for the given classname.
+	 * 
+	 * @param classname
+	 * @return
+	 */
+	public ClassNode getClassNode(String classname) {
+		return (ClassNode) findNode(this, ClassNode.class, classname);
+	}
+
+	/**
+	 * Searches for the first occurence of a node that is an instance of
+	 * the given class and has the given name.
+	 * 
+	 * @param node root node of the tree
+	 * @param clazz to search for
+	 * @param name name that the NamedTreeNode should have
+	 * @return NamedTreeNode
+	 */
+	protected TreeNode findNode(TreeNode node, Class<? extends NamedTreeNode> clazz, String name) {
+		Enumeration<TreeNode> e = node.children();
+		while(e.hasMoreElements()) {
+			TreeNode currentNode = e.nextElement();
+			if (clazz.isInstance(currentNode)) {
+				if (((NamedTreeNode) currentNode).getName().equals(name)) {
+					return currentNode;
+				}
+			}
+			
+			TreeNode childResult = findNode(currentNode, clazz, name);
+			if (childResult != null) {
+				return childResult;
 			}
 		}
 		

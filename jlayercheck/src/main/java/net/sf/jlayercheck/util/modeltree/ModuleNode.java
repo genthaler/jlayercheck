@@ -9,7 +9,7 @@ import javax.swing.tree.MutableTreeNode;
  * 
  * @author webmaster@earth3d.org
  */
-public interface ModuleNode extends MutableTreeNode {
+public interface ModuleNode extends MutableTreeNode, NamedTreeNode {
 	public Vector<PackageNode> getPackages();
 
 	/**

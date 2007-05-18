@@ -10,6 +10,6 @@ import javax.swing.tree.MutableTreeNode;
  * 
  * @author webmaster@earth3d.org
  */
-public interface PackageNode extends MutableTreeNode {
+public interface PackageNode extends MutableTreeNode, NamedTreeNode {
 	public Vector<ClassNode> getClasses();
 }

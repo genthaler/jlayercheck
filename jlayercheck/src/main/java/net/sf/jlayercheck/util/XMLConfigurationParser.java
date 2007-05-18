@@ -23,6 +23,7 @@ import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
 import net.sf.jlayercheck.util.model.ClassDependency;
 import net.sf.jlayercheck.util.model.ClassSource;
 import net.sf.jlayercheck.util.model.FilesystemClassSource;
+import net.sf.jlayercheck.util.modeltree.ClassNode;
 import net.sf.jlayercheck.util.modeltree.DefaultClassNode;
 import net.sf.jlayercheck.util.modeltree.DefaultModelTree;
 import net.sf.jlayercheck.util.modeltree.DefaultModuleNode;
@@ -564,6 +565,24 @@ public class XMLConfigurationParser {
     		for(String classname : dv.getPackages().get(packagename)) {
     			// add class nodes for all packages
     			packagenode.add(new DefaultClassNode(classname));
+    		}
+    	}
+
+    	// add dependecies
+    	for(String classname : dv.getDependencies().keySet()) {
+    		for(String dep : dv.getDependencies().get(classname).keySet()) {
+    			ClassDependency cd = new ClassDependency(dep);
+    			
+    			for(Integer line : dv.getDependencies().get(classname).get(dep)) {
+    				cd.addLineNumber(line);
+    			}
+    			
+				ClassNode cn = result.getClassNode(classname);
+				if (cn != null) {
+					cn.addClassDependency(cd);
+				} else {
+					System.out.println("Class "+cn+" not found!");
+				}
     		}
     	}
     	

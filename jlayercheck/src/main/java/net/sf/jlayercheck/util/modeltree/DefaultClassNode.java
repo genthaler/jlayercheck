@@ -1,6 +1,11 @@
 package net.sf.jlayercheck.util.modeltree;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import net.sf.jlayercheck.util.model.ClassDependency;
 
 /**
  * @see ClassNode
@@ -16,6 +21,8 @@ public class DefaultClassNode extends DefaultMutableTreeNode implements ClassNod
 
 	protected String classname;
 	
+	protected Set<ClassDependency> classDependencies = new HashSet<ClassDependency>();
+	
 	public DefaultClassNode(String classname) {
 		this.classname = classname;
 		
@@ -28,5 +35,17 @@ public class DefaultClassNode extends DefaultMutableTreeNode implements ClassNod
 	
 	public String toString() {
 		return getClassname().replace("/", ".");
+	}
+
+	public String getName() {
+		return getClassname();
+	}
+
+	public void addClassDependency(ClassDependency cd) {
+		classDependencies.add(cd);
+	}
+
+	public Set<ClassDependency> getClassDependencies() {
+		return classDependencies;
 	}
 }
