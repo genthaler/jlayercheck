@@ -1,6 +1,6 @@
 package net.sf.jlayercheck.gui;
 
-import java.awt.FlowLayout;
+import java.awt.BorderLayout;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -11,6 +11,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -68,17 +69,17 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 
 		DefaultTreeModel treemodel = new DefaultTreeModel(xcp.getModelTree(dv));
 
-		getContentPane().setLayout(new FlowLayout());
+		getContentPane().setLayout(new BorderLayout());
 		
 		JTree testtree = new JTree();
 		testtree.setModel(treemodel);
 		JScrollPane scroll = new JScrollPane(testtree);
-		getContentPane().add(scroll);
 		TreeWrapper tw = new TreeWrapper(testtree);
 		testtree.getSelectionModel().addTreeSelectionListener(this);
 		list = new JList();
 		list.setModel(listModel);
-		getContentPane().add(list);
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, list);
+		getContentPane().add(split);
 		
 		tw.addTreeTreeDnDListener(new TreeTreeDnDListener() {
 		
@@ -124,7 +125,7 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 
 				ClassNode cn = (ClassNode) selected;
 				for(ClassDependency cd : cn.getClassDependencies()) {
-					listModel.addElement(cd.getDependency());
+					listModel.addElement(cd.getDependency().replace("/", "."));
 				}
 			}
 		}

@@ -32,6 +32,7 @@ public class HTMLOutputTest extends TestCase {
 		HTMLOutput html = new HTMLOutput("target/tmp");
 		html.write(dv, xcp);
 		
+		assertTrue(dv.getPackages().get("net/sf/jlayercheck/ant").contains("net/sf/jlayercheck/ant/JLCTaskTest"));
 		assertTrue(new File("target/tmp/unspecified.html").exists());
 		assertTrue(new File("target/tmp/violations.html").exists());
 	}

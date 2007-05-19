@@ -568,7 +568,7 @@ public class XMLConfigurationParser {
     		}
     	}
 
-    	// add dependecies
+    	// add dependencies
     	for(String classname : dv.getDependencies().keySet()) {
     		for(String dep : dv.getDependencies().get(classname).keySet()) {
     			ClassDependency cd = new ClassDependency(dep);
@@ -581,7 +581,7 @@ public class XMLConfigurationParser {
 				if (cn != null) {
 					cn.addClassDependency(cd);
 				} else {
-					System.out.println("Class "+cn+" not found!");
+					System.out.println("Class "+classname+" not found (to "+dep+")!");
 				}
     		}
     	}

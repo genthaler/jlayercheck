@@ -75,6 +75,8 @@ public class DependencyVisitor implements
 			final String signature, final String superName,
 			final String[] interfaces) {
 		currentClass = name;
+        addClassToPackage(name);
+
         currentClassDependencies = classDependencies.get(currentClass);
         if (currentClassDependencies == null) {
             currentClassDependencies = new HashMap<String, Set<Integer>>();
@@ -408,32 +410,35 @@ public class DependencyVisitor implements
 
     // ---------------------------------------------
 
-    protected String getGroupKey(String name) {
+    protected void addClassToPackage(String classname) {
     	// retrieve the package name
-    	String packagename = StringUtils.getPackageName(name);
+    	String packagename = StringUtils.getPackageName(classname);
         
         // add this class to the package
-        Set<String> packageclasses = packages.get(packagename);
+        addClassToPackage(classname, packagename);
+    }
+
+	protected void addClassToPackage(String classname, String packagename) {
+		Set<String> packageclasses = packages.get(packagename);
         if (packageclasses == null) {
         	packageclasses = new TreeSet<String>();
             packages.put(packagename, packageclasses);
         }
-        packageclasses.add(name);
-        
-        return name;
-    }
+        packageclasses.add(classname);
+	}
 
 	protected void addName(final String name) {
         if (name == null) {
             return;
         }
-        String p = getGroupKey(name);
-//        if (currentClass.indexOf("ClassReader")>0) System.out.println("Key="+p+" name="+name);
-        if (!currentClassDependencies.containsKey(p)) {
-            currentClassDependencies.put(p, new TreeSet<Integer>());
+        
+        addClassToPackage(name);
+
+        if (!currentClassDependencies.containsKey(name)) {
+            currentClassDependencies.put(name, new TreeSet<Integer>());
         }
-//        assert(currentLineNumber>0);
-        currentClassDependencies.get(p).add(currentLineNumber);
+        
+        currentClassDependencies.get(name).add(currentLineNumber);
     }
 
     protected void addNames(final String[] names) {
