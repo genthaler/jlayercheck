@@ -470,38 +470,56 @@ public class XMLConfigurationParser {
 				String dependencyPackageName = StringUtils.getPackageName(dependency);
 				
 				// check if packagename is an allowed dependency for classname
-				String classmodule = getMatchingModule(classname);
-				String dependencymodule = getMatchingModule(dependency);
-				
-				if (classmodule == null) {
-					// unspecified package
-				} else {
-					if (!classmodule.equals(dependencymodule)) {
-						if (!(isExcluded(classname) || isExcluded(dependency))) {
-							if (getModuleDependencies().get(classmodule) == null || dependencymodule == null || 
-									!getModuleDependencies().get(classmodule).contains(dependencymodule)) {
-
-								Map<String, ClassDependency> depList = unallowedDependencies.get(classname);
-								if (depList == null) {
-									depList = new TreeMap<String, ClassDependency>();
-									unallowedDependencies.put(classname, depList);
-								}
-								ClassDependency cd = depList.get(dependency);
-								if (cd == null) {
-									cd = new ClassDependency(dependency);
-									depList.put(dependency, cd);
-								}
-								for(Integer lineNumber : dependencies.get(classname).get(dependency)) {
-									cd.addLineNumber(lineNumber);
-								}
-							}
-						}
+				if (isUnallowedDependency(classname, dependency)) {
+					Map<String, ClassDependency> depList = unallowedDependencies.get(classname);
+					if (depList == null) {
+						depList = new TreeMap<String, ClassDependency>();
+						unallowedDependencies.put(classname, depList);
+					}
+					ClassDependency cd = depList.get(dependency);
+					if (cd == null) {
+						cd = new ClassDependency(dependency);
+						depList.put(dependency, cd);
+					}
+					for(Integer lineNumber : dependencies.get(classname).get(dependency)) {
+						cd.addLineNumber(lineNumber);
 					}
 				}
 			}
 		}
 		
 		return unallowedDependencies;
+    }
+
+    /**
+     * Returns true when the dependency from fromClass to toClass is not allowed,
+     * otherwise false.
+     * 
+     * @param fromClass
+     * @param toClass
+     * @return
+     * @throws OverlappingModulesDefinitionException
+     */
+    public boolean isUnallowedDependency(String fromClass, String toClass) throws OverlappingModulesDefinitionException {
+		String classmodule = getMatchingModule(fromClass);
+		String dependencymodule = getMatchingModule(toClass);
+		
+		if (classmodule == null) {
+			// unspecified package
+			return false;
+		} else {
+			if (!classmodule.equals(dependencymodule)) {
+				if (!(isExcluded(fromClass) || isExcluded(toClass))) {
+					if (getModuleDependencies().get(classmodule) == null || dependencymodule == null || 
+							!getModuleDependencies().get(classmodule).contains(dependencymodule)) {
+
+						return true;
+					}
+				}
+			}
+		}
+	
+		return false;
     }
     
     /**
@@ -571,12 +589,16 @@ public class XMLConfigurationParser {
     	// add dependencies
     	for(String classname : dv.getDependencies().keySet()) {
     		for(String dep : dv.getDependencies().get(classname).keySet()) {
+    			// create ClassDependency
     			ClassDependency cd = new ClassDependency(dep);
     			
     			for(Integer line : dv.getDependencies().get(classname).get(dep)) {
     				cd.addLineNumber(line);
     			}
+
+    			cd.setUnallowedDependency(isUnallowedDependency(classname, dep));
     			
+    			// and add it to the ClassNode
 				ClassNode cn = result.getClassNode(classname);
 				if (cn != null) {
 					cn.addClassDependency(cd);

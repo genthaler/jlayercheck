@@ -80,4 +80,8 @@ public class DefaultModuleNode extends DefaultMutableTreeNode implements ModuleN
 		
 		return null;
 	}
+
+	public int compareTo(ModuleNode o) {
+		return getModuleName().compareTo(o.getModuleName());
+	}
 }
