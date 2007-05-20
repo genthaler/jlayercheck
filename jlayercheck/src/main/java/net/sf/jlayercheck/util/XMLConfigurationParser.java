@@ -220,7 +220,6 @@ public class XMLConfigurationParser {
 
 	protected void addPackageToModule(String moduleName, String packageName) {
 		logger.finer("Add package "+packageName+" to module "+moduleName);
-		System.out.println("Add package "+packageName+" to module "+moduleName);
 		packageName = packageName.replaceAll("\\.", "/");
 
 		Set<String> packs = modulePackages.get(moduleName);
