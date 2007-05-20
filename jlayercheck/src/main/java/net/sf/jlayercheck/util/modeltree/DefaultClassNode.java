@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import net.sf.jlayercheck.gui.PackageFrame;
 import net.sf.jlayercheck.util.model.ClassDependency;
 
 /**
@@ -22,7 +23,7 @@ public class DefaultClassNode extends DefaultMutableTreeNode implements ClassNod
 	protected String classname;
 	
 	protected Set<ClassDependency> classDependencies = new HashSet<ClassDependency>();
-	
+
 	public DefaultClassNode(String classname) {
 		this.classname = classname;
 		

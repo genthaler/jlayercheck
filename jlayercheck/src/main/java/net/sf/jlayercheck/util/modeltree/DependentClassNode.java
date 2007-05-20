@@ -2,7 +2,7 @@ package net.sf.jlayercheck.util.modeltree;
 
 import net.sf.jlayercheck.util.model.ClassDependency;
 
-public class DependentClassNode extends DefaultClassNode {
+public class DependentClassNode extends DefaultClassNode implements UnallowedOrAllowedDependency {
 
 	protected ClassDependency classDependency;
 	
@@ -24,5 +24,9 @@ public class DependentClassNode extends DefaultClassNode {
 
 	public void setClassDependency(ClassDependency classDependency) {
 		this.classDependency = classDependency;
+	}
+
+	public boolean isUnallowedDependency() {
+		return getClassDependency().isUnallowedDependency();
 	}
 }

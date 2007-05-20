@@ -16,6 +16,7 @@
 		</module>
 		<module name="util_model">
 			<package name="net.sf.jlayercheck.util.model" />
+			<package name="net.sf.jlayercheck.util.modeltree" />
 		</module>
 		<module name="util_exceptions">
 			<package name="net.sf.jlayercheck.util.exceptions" />

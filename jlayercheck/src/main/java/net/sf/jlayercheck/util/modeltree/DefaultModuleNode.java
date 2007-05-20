@@ -7,7 +7,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 /**
  * @see ModuleNode
  * @author webmaster@earth3d.org
- *
  */
 public class DefaultModuleNode extends DefaultMutableTreeNode implements ModuleNode {
 

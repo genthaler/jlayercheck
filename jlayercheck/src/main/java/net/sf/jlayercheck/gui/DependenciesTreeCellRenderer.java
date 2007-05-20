@@ -4,17 +4,17 @@ import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
 import net.sf.jlayercheck.util.modeltree.DependentClassNode;
+import net.sf.jlayercheck.util.modeltree.UnallowedOrAllowedDependency;
 
 /**
  * Draws labels for allowed dependencies green, for unallowed red.
  *  
  * @author webmaster@earth3d.org
  */
-public class DependenciesTreeCellRenderer extends DefaultTreeCellRenderer
+public class DependenciesTreeCellRenderer extends ModelPackageClassRenderer
 		implements TreeCellRenderer {
 
 	/**
@@ -24,10 +24,10 @@ public class DependenciesTreeCellRenderer extends DefaultTreeCellRenderer
 
 	@Override
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-		if (value instanceof DependentClassNode) {
-			DependentClassNode dcn = (DependentClassNode) value;
+		if (value instanceof UnallowedOrAllowedDependency) {
+			UnallowedOrAllowedDependency dcn = (UnallowedOrAllowedDependency) value;
 			
-			if (dcn.getClassDependency().isUnallowedDependency()) {
+			if (dcn.isUnallowedDependency()) {
 				setTextNonSelectionColor(Color.RED);
 			} else {
 				setTextNonSelectionColor(Color.GREEN);

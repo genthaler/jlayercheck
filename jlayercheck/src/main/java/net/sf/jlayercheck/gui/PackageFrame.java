@@ -14,6 +14,7 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.sf.jlayercheck.util.DependencyVisitor;
@@ -60,12 +61,12 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
         }
 
         modeltree = xcp.getModelTree(dv);
-		DefaultTreeModel treemodel2 = new DefaultTreeModel(modeltree);
+		DefaultTreeModel treemodel = new DefaultTreeModel(modeltree);
 
 		getContentPane().setLayout(new BorderLayout());
 		
 		JTree testtree = new ModelPackageClassTree();
-		testtree.setModel(treemodel2);
+		testtree.setModel(treemodel);
 		JScrollPane scroll = new JScrollPane(testtree);
 		testtree.getSelectionModel().addTreeSelectionListener(this);
 
@@ -93,6 +94,13 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 			Object selected = e.getNewLeadSelectionPath().getLastPathComponent();
 			if (selected instanceof ClassNode) {
 				list.showDependencies((ClassNode) selected, modeltree);
+				
+				list.expandAll();
+				
+				// collapse "unassigned"
+				if (list.getUnassignedModule() != null) {
+					list.collapsePath(new TreePath(new Object[] {list.getModel().getRoot(), list.getUnassignedModule()}));
+				}
 			}
 		}
 	}

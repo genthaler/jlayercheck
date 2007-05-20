@@ -30,7 +30,13 @@ public class DefaultPackageNode extends DefaultMutableTreeNode implements Packag
 	}
 
 	public Vector<ClassNode> getClasses() {
-		return (Vector<ClassNode>) children();
+		if (getChildCount() > 0) {
+			Vector<ClassNode> result = new Vector<ClassNode>();
+			result.addAll(children);
+			return result;
+		}
+		
+		return new Vector<ClassNode>();
 	}
 
 	public String getPackagename() {
