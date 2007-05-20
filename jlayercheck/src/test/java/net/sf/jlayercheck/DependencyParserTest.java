@@ -25,6 +25,11 @@ public class DependencyParserTest extends TestCase {
 		assertTrue(v.getDependencies().get("org/objectweb/asm/ClassReader").containsKey("java/io/InputStream"));
 	}
 
+	/**
+	 * Tests the parser by letting the project parse itself.
+	 * 
+	 * @throws Exception
+	 */
 	public void testParserClasses() throws Exception {
 		DependencyVisitor v = new DependencyVisitor();
 		

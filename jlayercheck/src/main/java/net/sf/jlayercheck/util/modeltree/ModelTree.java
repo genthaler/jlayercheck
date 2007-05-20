@@ -13,4 +13,12 @@ import javax.swing.tree.TreeNode;
  */
 public interface ModelTree extends TreeNode {
 	public Vector<ModuleNode> getModules();
+
+	/**
+	 * Returns the first ClassNode node for the given classname.
+	 * 
+	 * @param classname
+	 * @return
+	 */
+	public ClassNode getClassNode(String classname);
 }

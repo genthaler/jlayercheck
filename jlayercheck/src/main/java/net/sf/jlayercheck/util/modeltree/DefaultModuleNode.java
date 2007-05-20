@@ -27,7 +27,13 @@ public class DefaultModuleNode extends DefaultMutableTreeNode implements ModuleN
 	}
 
 	public Vector<PackageNode> getPackages() {
-		return (Vector<PackageNode>) children();
+		if (getChildCount() > 0) {
+			Vector<PackageNode> result = new Vector<PackageNode>();
+			result.addAll(children);
+			return result;
+		}
+		
+		return new Vector<PackageNode>();
 	}
 
 	/**
@@ -55,5 +61,23 @@ public class DefaultModuleNode extends DefaultMutableTreeNode implements ModuleN
 
 	public String getName() {
 		return getModuleName();
+	}
+	
+	/**
+	 * Searches for the PackageNode with the given name.
+	 * 
+	 * @param packagename
+	 * @return
+	 */
+	public PackageNode getPackage(String packagename) {
+		if (getPackages() == null) return null;
+		
+		for(PackageNode node : getPackages()) {
+			if (node.getPackagename().equals(packagename)) {
+				return node;
+			}
+		}
+		
+		return null;
 	}
 }

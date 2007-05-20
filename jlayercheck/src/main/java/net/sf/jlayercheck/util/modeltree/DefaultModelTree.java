@@ -1,13 +1,10 @@
 package net.sf.jlayercheck.util.modeltree;
 
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
-
-import org.apache.commons.collections.iterators.EnumerationIterator;
 
 /**
  * @see ModelTree

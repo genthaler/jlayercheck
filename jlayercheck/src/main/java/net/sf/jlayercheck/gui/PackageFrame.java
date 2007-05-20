@@ -7,31 +7,22 @@ import java.net.URL;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
-import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.antonioshome.swing.treewrapper.DnDVetoException;
-import net.antonioshome.swing.treewrapper.TreeTreeDnDEvent;
-import net.antonioshome.swing.treewrapper.TreeTreeDnDListener;
-import net.antonioshome.swing.treewrapper.TreeWrapper;
 import net.sf.jlayercheck.util.DependencyVisitor;
 import net.sf.jlayercheck.util.XMLConfigurationParser;
 import net.sf.jlayercheck.util.exceptions.ConfigurationException;
 import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
-import net.sf.jlayercheck.util.model.ClassDependency;
 import net.sf.jlayercheck.util.model.ClassSource;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
-import net.sf.jlayercheck.util.modeltree.ModuleNode;
-import net.sf.jlayercheck.util.modeltree.PackageNode;
+import net.sf.jlayercheck.util.modeltree.ModelTree;
 
 import org.xml.sax.SAXException;
 
@@ -49,8 +40,9 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 	 */
 	private static final long serialVersionUID = -8443924981257381579L;
 
-	protected JList list;
-	protected DefaultListModel listModel = new DefaultListModel();
+	protected DependenciesTree list;
+	
+	protected ModelTree modeltree;
 	
 	public PackageFrame() throws IOException, SAXException, ParserConfigurationException, ConfigurationException, OverlappingModulesDefinitionException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,41 +59,21 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
             javaSources.putAll(source.getSourceFiles());
         }
 
-		DefaultTreeModel treemodel = new DefaultTreeModel(xcp.getModelTree(dv));
+        modeltree = xcp.getModelTree(dv);
+		DefaultTreeModel treemodel2 = new DefaultTreeModel(modeltree);
 
 		getContentPane().setLayout(new BorderLayout());
 		
-		JTree testtree = new JTree();
-		testtree.setModel(treemodel);
+		JTree testtree = new ModelPackageClassTree();
+		testtree.setModel(treemodel2);
 		JScrollPane scroll = new JScrollPane(testtree);
-		TreeWrapper tw = new TreeWrapper(testtree);
 		testtree.getSelectionModel().addTreeSelectionListener(this);
-		list = new JList();
-		list.setModel(listModel);
-		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, list);
+
+		list = new DependenciesTree();
+		JScrollPane scrollDep = new JScrollPane(list);
+		
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, scrollDep);
 		getContentPane().add(split);
-		
-		tw.addTreeTreeDnDListener(new TreeTreeDnDListener() {
-		
-			public void mayDrop(TreeTreeDnDEvent arg0) throws DnDVetoException {
-				TreeNode source = arg0.getSourceNode();
-				TreeNode target = arg0.getTargetNode();
-				if (source instanceof PackageNode && target instanceof ModuleNode) {
-					return;
-				}
-				if (source instanceof ClassNode && target instanceof PackageNode) {
-					return;
-				}
-				if (source instanceof ClassNode && target instanceof ClassNode) {
-					return;
-				}
-				throw new DnDVetoException("");
-			}
-		
-			public void drop(TreeTreeDnDEvent arg0) throws DnDVetoException {
-			}
-		
-		});
 	}
 	
 	/**
@@ -119,14 +91,8 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 	public void valueChanged(TreeSelectionEvent e) {
 		if (e.getNewLeadSelectionPath() != null) {
 			Object selected = e.getNewLeadSelectionPath().getLastPathComponent();
-
 			if (selected instanceof ClassNode) {
-				listModel.clear();
-
-				ClassNode cn = (ClassNode) selected;
-				for(ClassDependency cd : cn.getClassDependencies()) {
-					listModel.addElement(cd.getDependency().replace("/", "."));
-				}
+				list.showDependencies((ClassNode) selected, modeltree);
 			}
 		}
 	}

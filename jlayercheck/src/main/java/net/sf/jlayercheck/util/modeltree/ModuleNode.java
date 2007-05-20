@@ -25,4 +25,12 @@ public interface ModuleNode extends MutableTreeNode, NamedTreeNode {
 	 * @param packagenode
 	 */
 	public void add(PackageNode packagenode);
+	
+	/**
+	 * Searches for the PackageNode with the given name.
+	 * 
+	 * @param packagename
+	 * @return
+	 */
+	public PackageNode getPackage(String packagename);
 }

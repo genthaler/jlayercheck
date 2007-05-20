@@ -2,7 +2,7 @@ package net.sf.jlayercheck.util.modeltree;
 
 import java.util.Set;
 
-import javax.swing.tree.TreeNode;
+import javax.swing.tree.MutableTreeNode;
 
 import net.sf.jlayercheck.util.model.ClassDependency;
 
@@ -11,7 +11,7 @@ import net.sf.jlayercheck.util.model.ClassDependency;
  * 
  * @author webmaster@earth3d.org
  */
-public interface ClassNode extends TreeNode, NamedTreeNode {
+public interface ClassNode extends MutableTreeNode, NamedTreeNode {
 
 	/**
 	 * Adds a dependency to another class.
