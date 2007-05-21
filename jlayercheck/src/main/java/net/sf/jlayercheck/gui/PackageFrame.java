@@ -23,6 +23,7 @@ import net.sf.jlayercheck.util.exceptions.ConfigurationException;
 import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
 import net.sf.jlayercheck.util.model.ClassSource;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
+import net.sf.jlayercheck.util.modeltree.DependenciesTreeModel;
 import net.sf.jlayercheck.util.modeltree.ModelTree;
 
 import org.xml.sax.SAXException;
@@ -93,13 +94,14 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 		if (e.getNewLeadSelectionPath() != null) {
 			Object selected = e.getNewLeadSelectionPath().getLastPathComponent();
 			if (selected instanceof ClassNode) {
-				list.showDependencies((ClassNode) selected, modeltree);
+				DependenciesTreeModel model = new DependenciesTreeModel((ClassNode) selected, modeltree);
+				list.setModel(model);
 				
 				list.expandAll();
 				
 				// collapse "unassigned"
-				if (list.getUnassignedModule() != null) {
-					list.collapsePath(new TreePath(new Object[] {list.getModel().getRoot(), list.getUnassignedModule()}));
+				if (model.getUnassignedModule() != null) {
+					list.collapsePath(new TreePath(new Object[] {list.getModel().getRoot(), model.getUnassignedModule()}));
 				}
 			}
 		}

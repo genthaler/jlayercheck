@@ -23,7 +23,13 @@ public class DefaultModelTree extends DefaultMutableTreeNode implements ModelTre
 	}
 
 	public Vector<ModuleNode> getModules() {
-		return (Vector<ModuleNode>) children;
+		if (getChildCount() > 0) {
+			Vector<ModuleNode> result = new Vector<ModuleNode>();
+			result.addAll(children);
+			return result;
+		}
+		
+		return new Vector<ModuleNode>();
 	}
 
 	/**

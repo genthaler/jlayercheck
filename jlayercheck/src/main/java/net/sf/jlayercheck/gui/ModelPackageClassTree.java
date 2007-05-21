@@ -24,7 +24,7 @@ public class ModelPackageClassTree extends JTree {
 	private static final long serialVersionUID = 8017813199550063002L;
 
 	public ModelPackageClassTree() {
-		setCellRenderer(new ModelPackageClassRenderer());
+		setCellRenderer(new DependenciesTreeCellRenderer());
 		
 		TreeWrapper tw = new TreeWrapper(this);
 		

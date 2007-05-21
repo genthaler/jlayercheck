@@ -47,6 +47,7 @@
 			<dependency name="util" />
 			<dependency name="util_exceptions" />
 			<dependency name="util_graph" />
+			<dependency name="util_model" />
 		</module>
 		<exclude>
 			<package name="java.*" />

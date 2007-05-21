@@ -24,12 +24,16 @@ import net.sf.jlayercheck.util.model.ClassDependency;
 import net.sf.jlayercheck.util.model.ClassSource;
 import net.sf.jlayercheck.util.model.FilesystemClassSource;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
-import net.sf.jlayercheck.util.modeltree.DefaultClassNode;
 import net.sf.jlayercheck.util.modeltree.DefaultModelTree;
-import net.sf.jlayercheck.util.modeltree.DefaultModuleNode;
 import net.sf.jlayercheck.util.modeltree.DefaultPackageNode;
+import net.sf.jlayercheck.util.modeltree.DependenciesTreeModel;
+import net.sf.jlayercheck.util.modeltree.DependentClassNode;
+import net.sf.jlayercheck.util.modeltree.DependentModuleNode;
+import net.sf.jlayercheck.util.modeltree.DependentPackageNode;
 import net.sf.jlayercheck.util.modeltree.ModelTree;
 import net.sf.jlayercheck.util.modeltree.ModuleNode;
+import net.sf.jlayercheck.util.modeltree.PackageNode;
+import net.sf.jlayercheck.util.modeltree.UnallowedOrAllowedDependency;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -572,17 +576,17 @@ public class XMLConfigurationParser {
 			ModuleNode module = result.getModule(packagemodule);
 			
 			if (module == null) {
-				module = new DefaultModuleNode(packagemodule);
+				module = new DependentModuleNode(packagemodule);
 				result.add(module);
 			}
 			
 			// add the new package node
-    		DefaultPackageNode packagenode = new DefaultPackageNode(packagename);
+    		DefaultPackageNode packagenode = new DependentPackageNode(packagename);
 			module.add(packagenode);
 
     		for(String classname : dv.getPackages().get(packagename)) {
     			// add class nodes for all packages
-    			packagenode.add(new DefaultClassNode(classname));
+    			packagenode.add(new DependentClassNode(new ClassDependency(classname)));
     		}
     	}
 
@@ -607,19 +611,38 @@ public class XMLConfigurationParser {
 				}
     		}
     	}
+
+    	// calculate state unallowed/allowed dependencies for the tree
+		// compute unallowed dependency marks
+		for(ModuleNode mn : result.getModules()) {
+			boolean mnUnallowed = false;
+			for(PackageNode pn : mn.getPackages()) {
+				boolean pnUnallowed = false;
+				for (ClassNode cn : pn.getClasses()) {
+					if (cn instanceof DependentClassNode) {
+						DependentClassNode dcn = (DependentClassNode) cn;
+						
+						DependenciesTreeModel dtm = new DependenciesTreeModel(dcn, result);
+						dcn.getClassDependency().setUnallowedDependency(((UnallowedOrAllowedDependency) dtm.getRoot()).isUnallowedDependency()); 
+
+						if (dcn.getClassDependency().isUnallowedDependency()) {
+							pnUnallowed = true;
+							mnUnallowed = true;
+						}
+					}
+				}
+				
+				if (pn instanceof DependentPackageNode) {
+					((DependentPackageNode) pn).setUnallowedDependency(pnUnallowed);
+				}
+			}
+
+			if (mn instanceof DependentModuleNode) {
+				((DependentModuleNode) mn).setUnallowedDependency(mnUnallowed);
+			}
+		}
+
     	
-    	// add dependency violations
-//		Map<String, Map<String, ClassDependency>> unallowedDependencies = getUnallowedDependencies(dv.getDependencies()); 
-//		for(String packagename : dv.getPackages().keySet()) {
-//			for(String classname : dv.getPackages().get(packagename)) {
-//				String classPackageName = StringUtils.getPackageName(classname);
-//				String classmodule = getMatchingModule(classname);
-//
-//				if (unallowedDependencies.get(classname) != null) {
-//					
-//				}
-//			}
-//		}
     	return result;
     }
 }
