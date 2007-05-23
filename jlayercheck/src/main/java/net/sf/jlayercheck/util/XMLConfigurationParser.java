@@ -624,7 +624,8 @@ public class XMLConfigurationParser {
 						
 						DependenciesTreeModel dtm = new DependenciesTreeModel(dcn, result);
 						dcn.getClassDependency().setUnallowedDependency(((UnallowedOrAllowedDependency) dtm.getRoot()).isUnallowedDependency()); 
-
+						dcn.setDependenciesTreeModel(dtm);
+						
 						if (dcn.getClassDependency().isUnallowedDependency()) {
 							pnUnallowed = true;
 							mnUnallowed = true;

@@ -24,6 +24,8 @@ import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
 import net.sf.jlayercheck.util.model.ClassSource;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
 import net.sf.jlayercheck.util.modeltree.DependenciesTreeModel;
+import net.sf.jlayercheck.util.modeltree.DependentClassNode;
+import net.sf.jlayercheck.util.modeltree.DependentPackageNode;
 import net.sf.jlayercheck.util.modeltree.ModelTree;
 
 import org.xml.sax.SAXException;
@@ -93,8 +95,29 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 	public void valueChanged(TreeSelectionEvent e) {
 		if (e.getNewLeadSelectionPath() != null) {
 			Object selected = e.getNewLeadSelectionPath().getLastPathComponent();
-			if (selected instanceof ClassNode) {
-				DependenciesTreeModel model = new DependenciesTreeModel((ClassNode) selected, modeltree);
+			DependenciesTreeModel model = null;
+			if (selected instanceof DependentClassNode) {
+				model = ((DependentClassNode) selected).getDependenciesTreeModel();
+			}
+			if (selected instanceof DependentPackageNode) {
+				// cummulate all dependencies from all contained classes
+				DependentPackageNode dpn = (DependentPackageNode) selected;
+				
+				for(ClassNode cn : dpn.getClasses()) {
+					if (cn instanceof DependentClassNode) {
+						DependentClassNode dcn = (DependentClassNode) cn;
+						
+						if (model == null) {
+							model = dcn.getDependenciesTreeModel();
+						} else {
+							model.merge(dcn.getDependenciesTreeModel());
+						}
+					}
+				}
+			}
+			
+			// show the created model
+			if (model != null) {
 				list.setModel(model);
 				
 				list.expandAll();

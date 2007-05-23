@@ -138,4 +138,12 @@ public class DependenciesTreeModel extends DefaultTreeModel {
 	public ModuleNode getUnassignedModule() {
 		return unassignedModule;
 	}
+
+	/**
+	 * Merges the other tree into this tree.
+	 * @param dependenciesTreeModel
+	 */
+	public void merge(DependenciesTreeModel dependenciesTreeModel) {
+		// TODO
+	}
 }

@@ -5,6 +5,7 @@ import net.sf.jlayercheck.util.model.ClassDependency;
 public class DependentClassNode extends DefaultClassNode implements UnallowedOrAllowedDependency {
 
 	protected ClassDependency classDependency;
+	protected DependenciesTreeModel dependenciesTreeModel;
 	
 	public DependentClassNode(ClassDependency cd) {
 		super(cd.getDependency());
@@ -28,5 +29,17 @@ public class DependentClassNode extends DefaultClassNode implements UnallowedOrA
 
 	public boolean isUnallowedDependency() {
 		return getClassDependency().isUnallowedDependency();
+	}
+
+	/**
+	 * Contains the tree that contains all dependencies of this class to other modules, packages and classes.
+	 * @return tree model
+	 */
+	public DependenciesTreeModel getDependenciesTreeModel() {
+		return dependenciesTreeModel;
+	}
+
+	public void setDependenciesTreeModel(DependenciesTreeModel dependenciesTreeModel) {
+		this.dependenciesTreeModel = dependenciesTreeModel;
 	}
 }
