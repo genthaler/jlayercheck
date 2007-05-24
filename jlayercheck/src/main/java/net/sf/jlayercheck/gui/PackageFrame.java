@@ -26,8 +26,10 @@ import net.sf.jlayercheck.util.modeltree.ClassNode;
 import net.sf.jlayercheck.util.modeltree.DependenciesTreeModel;
 import net.sf.jlayercheck.util.modeltree.DependentClassNode;
 import net.sf.jlayercheck.util.modeltree.DependentModelTree;
+import net.sf.jlayercheck.util.modeltree.DependentModuleNode;
 import net.sf.jlayercheck.util.modeltree.DependentPackageNode;
 import net.sf.jlayercheck.util.modeltree.ModelTree;
+import net.sf.jlayercheck.util.modeltree.PackageNode;
 
 import org.xml.sax.SAXException;
 
@@ -101,16 +103,22 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 				model = ((DependentClassNode) selected).getDependenciesTreeModel();
 			}
 			if (selected instanceof DependentPackageNode) {
-				// cummulate all dependencies from all contained classes
-				DependentPackageNode dpn = (DependentPackageNode) selected;
-
 				model = new DependenciesTreeModel();
 				
-				for(ClassNode cn : dpn.getClasses()) {
-					if (cn instanceof DependentClassNode) {
-						DependentClassNode dcn = (DependentClassNode) cn;
+				// cummulate all dependencies from all contained classes
+				mergePackage((DependentPackageNode) selected, model);
+			}
+			if (selected instanceof DependentModuleNode) {
+				model = new DependenciesTreeModel();
+				
+				// cummulate all dependencies from all contained classes
+				DependentModuleNode dmn = (DependentModuleNode) selected;
+
+				for(PackageNode pn : dmn.getPackages()) {
+					if (pn instanceof DependentPackageNode) {
+						DependentPackageNode dpn = (DependentPackageNode) pn;
 						
-						model.merge((DependentModelTree) dcn.getDependenciesTreeModel().getRoot());
+						mergePackage(dpn, model);
 					}
 				}
 			}
@@ -125,6 +133,16 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 				if (model.getUnassignedModule() != null) {
 					list.collapsePath(new TreePath(new Object[] {list.getModel().getRoot(), model.getUnassignedModule()}));
 				}
+			}
+		}
+	}
+
+	protected void mergePackage(DependentPackageNode dpn, DependenciesTreeModel model) {
+		for(ClassNode cn : dpn.getClasses()) {
+			if (cn instanceof DependentClassNode) {
+				DependentClassNode dcn = (DependentClassNode) cn;
+				
+				model.merge((DependentModelTree) dcn.getDependenciesTreeModel().getRoot());
 			}
 		}
 	}
