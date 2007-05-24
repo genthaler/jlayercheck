@@ -54,4 +54,14 @@ public class DefaultPackageNode extends DefaultMutableTreeNode implements Packag
 	public void add(ClassNode classnode) {
 		super.add(classnode);
 	}
+
+	public ClassNode getClass(String name) {
+		for(ClassNode node : getClasses()) {
+			if (node.getName().equals(name)) {
+				return node;
+			}
+		}
+		
+		return null;
+	}
 }

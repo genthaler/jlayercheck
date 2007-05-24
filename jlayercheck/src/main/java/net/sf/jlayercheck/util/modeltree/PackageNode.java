@@ -30,4 +30,11 @@ public interface PackageNode extends MutableTreeNode, NamedTreeNode {
 	 * @param classnode
 	 */
 	public void add(ClassNode classnode);
+
+	/**
+	 * Retrieves the ClassNode with the given name. 
+	 * @param name
+	 * @return ClassNode
+	 */
+	public ClassNode getClass(String name);
 }

@@ -25,6 +25,7 @@ import net.sf.jlayercheck.util.model.ClassSource;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
 import net.sf.jlayercheck.util.modeltree.DependenciesTreeModel;
 import net.sf.jlayercheck.util.modeltree.DependentClassNode;
+import net.sf.jlayercheck.util.modeltree.DependentModelTree;
 import net.sf.jlayercheck.util.modeltree.DependentPackageNode;
 import net.sf.jlayercheck.util.modeltree.ModelTree;
 
@@ -102,16 +103,14 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 			if (selected instanceof DependentPackageNode) {
 				// cummulate all dependencies from all contained classes
 				DependentPackageNode dpn = (DependentPackageNode) selected;
+
+				model = new DependenciesTreeModel();
 				
 				for(ClassNode cn : dpn.getClasses()) {
 					if (cn instanceof DependentClassNode) {
 						DependentClassNode dcn = (DependentClassNode) cn;
 						
-						if (model == null) {
-							model = dcn.getDependenciesTreeModel();
-						} else {
-							model.merge(dcn.getDependenciesTreeModel());
-						}
+						model.merge((DependentModelTree) dcn.getDependenciesTreeModel().getRoot());
 					}
 				}
 			}

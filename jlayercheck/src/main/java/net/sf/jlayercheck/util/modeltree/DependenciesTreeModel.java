@@ -34,6 +34,22 @@ public class DependenciesTreeModel extends DefaultTreeModel {
 		setRoot(createModel(node, treemodel));
 	}
 
+	/**
+	 * Generates an empty dependency representation model.
+	 * 
+	 */
+	public DependenciesTreeModel() {
+		super(null);
+		setRoot(new DependentModelTree());
+	}
+	
+	/**
+	 * Creates a dependency tree model for the given node of the given ModelTree.
+	 * 
+	 * @param node
+	 * @param treemodel
+	 * @return
+	 */
 	protected TreeNode createModel(ClassNode node, ModelTree treemodel) {
 		DependentModelTree depTree = new DependentModelTree();
 		
@@ -41,33 +57,7 @@ public class DependenciesTreeModel extends DefaultTreeModel {
 			
 			ClassNode depClass = treemodel.getClassNode(cd.getDependency());
 			
-			PackageNode pn = null;
-			ModuleNode mn = null;
-			
-			if (depClass != null) {
-				pn = (PackageNode) depClass.getParent();
-				mn = (ModuleNode) pn.getParent();
-			} else {
-				pn = new DefaultPackageNode(UNASSIGNED);
-				mn = new DefaultModuleNode(UNASSIGNED);
-			}
-			
-			// create module if necessary
-			if (depTree.getModule(mn.getModuleName()) == null) {
-				depTree.add(new DependentModuleNode(mn.getModuleName()));
-			}
-			
-			ModuleNode destModule = depTree.getModule(mn.getModuleName());
-			
-			// create package if necessary
-			if (destModule.getPackage(pn.getPackagename()) == null) {
-				destModule.add(new DependentPackageNode(pn.getPackagename()));
-			}
-		
-			PackageNode destPackage = destModule.getPackage(pn.getPackagename());
-			
-			// create ClassNode
-			destPackage.add(new DependentClassNode(cd));
+			addClassNodeToDependentModelTree(depTree, cd, depClass);
 		}
 		
 		// compute unallowed dependency marks
@@ -103,6 +93,48 @@ public class DependenciesTreeModel extends DefaultTreeModel {
 		sortNodes(depTree);
 		
 		return depTree;
+	}
+
+	/**
+	 * Adds the given ClassNode to the given DependentModelTree.
+	 * 
+	 * @param depTree
+	 * @param cd
+	 * @param depClass
+	 */
+	protected void addClassNodeToDependentModelTree(DependentModelTree depTree, ClassDependency cd, ClassNode depClass) {
+		
+		// find the package and class node names where it should be inserted
+		
+		PackageNode pn = null;
+		ModuleNode mn = null;
+		
+		if (depClass != null) {
+			pn = (PackageNode) depClass.getParent();
+			mn = (ModuleNode) pn.getParent();
+		} else {
+			pn = new DefaultPackageNode(UNASSIGNED);
+			mn = new DefaultModuleNode(UNASSIGNED);
+		}
+		
+		// create module if necessary
+		if (depTree.getModule(mn.getModuleName()) == null) {
+			depTree.add(new DependentModuleNode(mn.getModuleName()));
+		}
+		
+		ModuleNode destModule = depTree.getModule(mn.getModuleName());
+		
+		// create package if necessary
+		if (destModule.getPackage(pn.getPackagename()) == null) {
+			destModule.add(new DependentPackageNode(pn.getPackagename()));
+		}
+
+		PackageNode destPackage = destModule.getPackage(pn.getPackagename());
+		
+		// create ClassNode if necessary
+		if (destPackage.getClass(cd.getDependency()) == null) {
+			destPackage.add(new DependentClassNode(cd));
+		}
 	}
 	
 	/**
@@ -143,7 +175,15 @@ public class DependenciesTreeModel extends DefaultTreeModel {
 	 * Merges the other tree into this tree.
 	 * @param dependenciesTreeModel
 	 */
-	public void merge(DependenciesTreeModel dependenciesTreeModel) {
-		// TODO
+	public void merge(DependentModelTree depTree) {
+		for(ModuleNode mn : depTree.getModules()) {
+			for(PackageNode pn : mn.getPackages()) {
+				for(ClassNode cn : pn.getClasses()) {
+					addClassNodeToDependentModelTree((DependentModelTree) getRoot(), new ClassDependency(cn.getName()), cn);
+				}
+			}
+		}
+		
+		sortNodes((DependentModelTree) getRoot());
 	}
 }
