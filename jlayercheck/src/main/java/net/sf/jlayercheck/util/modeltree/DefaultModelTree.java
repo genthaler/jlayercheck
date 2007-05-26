@@ -87,4 +87,37 @@ public class DefaultModelTree extends DefaultMutableTreeNode implements ModelTre
 		
 		return null;
 	}
+	
+	public void cumulateDependencyViolations() {
+    	// calculate state unallowed/allowed dependencies for the tree
+		// compute unallowed dependency marks
+		for(ModuleNode mn : getModules()) {
+			boolean mnUnallowed = false;
+			for(PackageNode pn : mn.getPackages()) {
+				boolean pnUnallowed = false;
+				for (ClassNode cn : pn.getClasses()) {
+					if (cn instanceof DependentClassNode) {
+						DependentClassNode dcn = (DependentClassNode) cn;
+						
+						DependenciesTreeModel dtm = new DependenciesTreeModel(dcn, this);
+						dcn.getClassDependency().setUnallowedDependency(((UnallowedOrAllowedDependency) dtm.getRoot()).isUnallowedDependency()); 
+						dcn.setDependenciesTreeModel(dtm);
+						
+						if (dcn.getClassDependency().isUnallowedDependency()) {
+							pnUnallowed = true;
+							mnUnallowed = true;
+						}
+					}
+				}
+				
+				if (pn instanceof DependentPackageNode) {
+					((DependentPackageNode) pn).setUnallowedDependency(pnUnallowed);
+				}
+			}
+
+			if (mn instanceof DependentModuleNode) {
+				((DependentModuleNode) mn).setUnallowedDependency(mnUnallowed);
+			}
+		}
+	}
 }

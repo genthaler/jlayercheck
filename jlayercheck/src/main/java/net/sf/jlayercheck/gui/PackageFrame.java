@@ -105,13 +105,13 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 			if (selected instanceof DependentPackageNode) {
 				model = new DependenciesTreeModel();
 				
-				// cummulate all dependencies from all contained classes
+				// cumulate all dependencies from all contained classes
 				mergePackage((DependentPackageNode) selected, model);
 			}
 			if (selected instanceof DependentModuleNode) {
 				model = new DependenciesTreeModel();
 				
-				// cummulate all dependencies from all contained classes
+				// cumulate all dependencies from all contained classes
 				DependentModuleNode dmn = (DependentModuleNode) selected;
 
 				for(PackageNode pn : dmn.getPackages()) {

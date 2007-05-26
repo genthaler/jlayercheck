@@ -8,6 +8,7 @@ import net.antonioshome.swing.treewrapper.TreeTreeDnDEvent;
 import net.antonioshome.swing.treewrapper.TreeTreeDnDListener;
 import net.antonioshome.swing.treewrapper.TreeWrapper;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
+import net.sf.jlayercheck.util.modeltree.DefaultModelTree;
 import net.sf.jlayercheck.util.modeltree.ModuleNode;
 import net.sf.jlayercheck.util.modeltree.PackageNode;
 
@@ -46,6 +47,7 @@ public class ModelPackageClassTree extends JTree {
 			}
 		
 			public void drop(TreeTreeDnDEvent arg0) throws DnDVetoException {
+				((DefaultModelTree) getModel().getRoot()).cumulateDependencyViolations();
 			}
 		
 		});
