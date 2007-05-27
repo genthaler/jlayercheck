@@ -1,12 +1,16 @@
 package net.sf.jlayercheck.gui;
 
 import javax.swing.JTree;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import net.antonioshome.swing.treewrapper.DnDVetoException;
 import net.antonioshome.swing.treewrapper.TreeTreeDnDEvent;
 import net.antonioshome.swing.treewrapper.TreeTreeDnDListener;
 import net.antonioshome.swing.treewrapper.TreeWrapper;
+import net.sf.jlayercheck.util.XMLConfigurationParser;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
 import net.sf.jlayercheck.util.modeltree.DefaultModelTree;
 import net.sf.jlayercheck.util.modeltree.ModuleNode;
@@ -24,7 +28,11 @@ public class ModelPackageClassTree extends JTree {
 	 */
 	private static final long serialVersionUID = 8017813199550063002L;
 
-	public ModelPackageClassTree() {
+	protected XMLConfigurationParser xmlConfiguration;
+	
+	public ModelPackageClassTree(XMLConfigurationParser xmlconf) {
+		this.xmlConfiguration = xmlconf;
+		
 		setCellRenderer(new DependenciesTreeCellRenderer());
 		
 		TreeWrapper tw = new TreeWrapper(this);
@@ -47,7 +55,46 @@ public class ModelPackageClassTree extends JTree {
 			}
 		
 			public void drop(TreeTreeDnDEvent arg0) throws DnDVetoException {
-				((DefaultModelTree) getModel().getRoot()).cumulateDependencyViolations();
+			}
+		
+		});
+	}
+
+	/**
+	 * Updates the status if nodes are unallowed dependencies.
+	 */
+	protected void updateTreeStatus() {
+		getXmlConfiguration().cumulateDependencyViolations(((DefaultModelTree) getModel().getRoot()));
+	}
+	
+	public XMLConfigurationParser getXmlConfiguration() {
+		return xmlConfiguration;
+	}
+
+	public void setXmlConfiguration(XMLConfigurationParser xmlConfiguration) {
+		this.xmlConfiguration = xmlConfiguration;
+	}
+
+	@Override
+	public void setModel(TreeModel arg0) {
+		super.setModel(arg0);
+		
+		getModel().addTreeModelListener(new TreeModelListener() {
+			
+			public void treeStructureChanged(TreeModelEvent arg0) {
+				updateTreeStatus();
+			}
+		
+			public void treeNodesRemoved(TreeModelEvent arg0) {
+				updateTreeStatus();
+			}
+		
+			public void treeNodesInserted(TreeModelEvent arg0) {
+				updateTreeStatus();
+			}
+		
+			public void treeNodesChanged(TreeModelEvent arg0) {
+				updateTreeStatus();
 			}
 		
 		});

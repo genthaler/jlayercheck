@@ -23,6 +23,7 @@ import net.sf.jlayercheck.util.exceptions.ConfigurationException;
 import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
 import net.sf.jlayercheck.util.model.ClassSource;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
+import net.sf.jlayercheck.util.modeltree.DefaultModelTree;
 import net.sf.jlayercheck.util.modeltree.DependenciesTreeModel;
 import net.sf.jlayercheck.util.modeltree.DependentClassNode;
 import net.sf.jlayercheck.util.modeltree.DependentModelTree;
@@ -67,11 +68,15 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
         }
 
         modeltree = xcp.getModelTree(dv);
+        if (modeltree instanceof DefaultModelTree) {
+        	((DefaultModelTree) modeltree).sortNodes();
+        }
+        
 		DefaultTreeModel treemodel = new DefaultTreeModel(modeltree);
 
 		getContentPane().setLayout(new BorderLayout());
 		
-		JTree testtree = new ModelPackageClassTree();
+		JTree testtree = new ModelPackageClassTree(xcp);
 		testtree.setModel(treemodel);
 		JScrollPane scroll = new JScrollPane(testtree);
 		testtree.getSelectionModel().addTreeSelectionListener(this);
@@ -130,8 +135,8 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 				list.expandAll();
 				
 				// collapse "unassigned"
-				if (model.getUnassignedModule() != null) {
-					list.collapsePath(new TreePath(new Object[] {list.getModel().getRoot(), model.getUnassignedModule()}));
+				if (((ModelTree) model.getRoot()).getUnassignedModule() != null) {
+					list.collapsePath(new TreePath(new Object[] {list.getModel().getRoot(), ((ModelTree) model.getRoot()).getUnassignedModule()}));
 				}
 			}
 		}

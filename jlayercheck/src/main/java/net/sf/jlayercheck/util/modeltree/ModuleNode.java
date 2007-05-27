@@ -33,4 +33,9 @@ public interface ModuleNode extends MutableTreeNode, NamedTreeNode, Comparable<M
 	 * @return
 	 */
 	public PackageNode getPackage(String packagename);
+
+	/**
+	 * Returns true if this module is the "unassigned" module for excluded classes.
+	 */
+	public boolean isUnassignedModule();
 }

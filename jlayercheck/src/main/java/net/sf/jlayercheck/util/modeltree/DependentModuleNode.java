@@ -6,6 +6,10 @@ public class DependentModuleNode extends DefaultModuleNode implements UnallowedO
 	 */
 	private static final long serialVersionUID = 5313450651664954471L;
 
+	public DependentModuleNode(String moduleName, boolean unassignedModule) {
+		super(moduleName, unassignedModule);
+	}
+
 	public DependentModuleNode(String moduleName) {
 		super(moduleName);
 	}

@@ -12,6 +12,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class DefaultPackageNode extends DefaultMutableTreeNode implements PackageNode {
 
 	protected String packagename;
+	protected boolean unassignedPackage;
 	
 	public DefaultPackageNode(String packagename) {
 		super();
@@ -63,5 +64,18 @@ public class DefaultPackageNode extends DefaultMutableTreeNode implements Packag
 		}
 		
 		return null;
+	}
+
+	/**
+	 * Returns true if this package is the "unassigned" package for excluded classes.
+	 * 
+	 * @return
+	 */
+	public boolean isUnassignedPackage() {
+		return unassignedPackage;
+	}
+
+	public void setUnassignedPackage(boolean unassignedPackage) {
+		this.unassignedPackage = unassignedPackage;
 	}
 }

@@ -21,4 +21,10 @@ public interface ModelTree extends TreeNode {
 	 * @return
 	 */
 	public ClassNode getClassNode(String classname);
+
+	/**
+	 * Returns the node that contains the unassigned packages.
+	 * @return "unassigned" ModuleNode
+	 */
+	public ModuleNode getUnassignedModule();
 }

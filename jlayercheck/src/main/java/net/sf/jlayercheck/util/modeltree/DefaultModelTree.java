@@ -1,6 +1,8 @@
 package net.sf.jlayercheck.util.modeltree;
 
 import java.util.Enumeration;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -9,7 +11,6 @@ import javax.swing.tree.TreeNode;
 /**
  * @see ModelTree
  * @author webmaster@earth3d.org
- *
  */
 public class DefaultModelTree extends DefaultMutableTreeNode implements ModelTree {
 
@@ -87,37 +88,46 @@ public class DefaultModelTree extends DefaultMutableTreeNode implements ModelTre
 		
 		return null;
 	}
-	
-	public void cumulateDependencyViolations() {
-    	// calculate state unallowed/allowed dependencies for the tree
-		// compute unallowed dependency marks
-		for(ModuleNode mn : getModules()) {
-			boolean mnUnallowed = false;
-			for(PackageNode pn : mn.getPackages()) {
-				boolean pnUnallowed = false;
-				for (ClassNode cn : pn.getClasses()) {
-					if (cn instanceof DependentClassNode) {
-						DependentClassNode dcn = (DependentClassNode) cn;
-						
-						DependenciesTreeModel dtm = new DependenciesTreeModel(dcn, this);
-						dcn.getClassDependency().setUnallowedDependency(((UnallowedOrAllowedDependency) dtm.getRoot()).isUnallowedDependency()); 
-						dcn.setDependenciesTreeModel(dtm);
-						
-						if (dcn.getClassDependency().isUnallowedDependency()) {
-							pnUnallowed = true;
-							mnUnallowed = true;
-						}
-					}
-				}
-				
-				if (pn instanceof DependentPackageNode) {
-					((DependentPackageNode) pn).setUnallowedDependency(pnUnallowed);
-				}
-			}
 
-			if (mn instanceof DependentModuleNode) {
-				((DependentModuleNode) mn).setUnallowedDependency(mnUnallowed);
+	/**
+	 * Sorts nodes and sorts the "unassigned" node to the end.
+	 */
+	public synchronized void sortNodes() {
+		SortedSet<ModuleNode> sort = new TreeSet<ModuleNode>();
+		sort.addAll(getModules());
+		removeAllChildren();
+
+		// re-add all nodes except the "unassigned" node
+		ModuleNode unassignedModule = null;
+		for(ModuleNode mn : sort) {
+			if (mn.isUnassignedModule()) {
+				assert(unassignedModule == null);
+				unassignedModule = mn;
+			} else {
+				add(mn);
 			}
 		}
+		
+		// add the "unassigned" node at the end
+		if (unassignedModule != null) {
+			add(unassignedModule);
+		}
+	}
+
+	/**
+	 * Finds and returns the ModuleNode that is named "unassigned" and contains all
+	 * packages that do not belong to any module. If it is not
+	 * found, null is returned.
+	 * 
+	 * @return "unassigned" ModuleNode or null
+	 */
+	public ModuleNode getUnassignedModule() {
+		for(ModuleNode mn : getModules()) {
+			if (mn.isUnassignedModule()) {
+				return mn;
+			}
+		}
+		
+		return null;
 	}
 }

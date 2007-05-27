@@ -37,4 +37,12 @@ public interface PackageNode extends MutableTreeNode, NamedTreeNode {
 	 * @return ClassNode
 	 */
 	public ClassNode getClass(String name);
+	
+	/**
+	 * Returns true if this is the "unassigned" package that
+	 * contains excluded classes.
+	 * 
+	 * @return
+	 */
+	public boolean isUnassignedPackage();
 }

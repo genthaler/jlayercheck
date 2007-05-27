@@ -17,12 +17,20 @@ public class DefaultModuleNode extends DefaultMutableTreeNode implements ModuleN
 
 	protected String moduleName;
 	
+	protected boolean unassignedModule;
+	
 	public DefaultModuleNode(String moduleName) {
 		assert(moduleName != null);
 		
 		this.moduleName = moduleName; 
 		
 		setAllowsChildren(true);
+	}
+
+	public DefaultModuleNode(String moduleName2, boolean unassignedModule2) {
+		this(moduleName2);
+		
+		setUnassignedModule(unassignedModule2);
 	}
 
 	public Vector<PackageNode> getPackages() {
@@ -82,5 +90,16 @@ public class DefaultModuleNode extends DefaultMutableTreeNode implements ModuleN
 
 	public int compareTo(ModuleNode o) {
 		return getModuleName().compareTo(o.getModuleName());
+	}
+
+	/**
+	 * Returns true if this module is the "unassigned" module for excluded classes.
+	 */
+	public boolean isUnassignedModule() {
+		return unassignedModule;
+	}
+
+	public void setUnassignedModule(boolean unassignedModule) {
+		this.unassignedModule = unassignedModule;
 	}
 }
