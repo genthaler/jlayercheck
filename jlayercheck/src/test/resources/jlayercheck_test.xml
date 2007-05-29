@@ -8,7 +8,7 @@
 			<package name="net.sf.jlayercheck.util" />
 		</module>
 		<module name="main">
-			<package name="net.sf.jlayercheck" />
+			<package name="net.sf.jlayercheck.gui" />
 			<dependency name="util" />
 		</module>
 		<exclude>

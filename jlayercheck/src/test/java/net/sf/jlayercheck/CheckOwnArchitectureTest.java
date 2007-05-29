@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import junit.framework.TestCase;
 import net.sf.jlayercheck.util.DependencyVisitor;
 import net.sf.jlayercheck.util.HTMLOutput;
+import net.sf.jlayercheck.util.XMLConfiguration;
 import net.sf.jlayercheck.util.XMLConfigurationParser;
 import net.sf.jlayercheck.util.model.ClassSource;
 
@@ -22,7 +23,7 @@ public class CheckOwnArchitectureTest extends TestCase {
 	public void testCheckOwn() throws Exception {
 		// load and parse configuration, class and java files
 		InputStream is = getClass().getResource("/jlayercheck.xml").openStream();
-		XMLConfigurationParser xcp = new XMLConfigurationParser(is);
+		XMLConfiguration xcp = new XMLConfigurationParser().parse(is);
 		DependencyVisitor dv = new DependencyVisitor();
 		Map<String, URL> javaSources = new TreeMap<String, URL>();
         for(ClassSource source : xcp.getClassSources()) {

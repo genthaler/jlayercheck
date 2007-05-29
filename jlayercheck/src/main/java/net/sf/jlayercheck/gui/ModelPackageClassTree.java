@@ -10,7 +10,7 @@ import net.antonioshome.swing.treewrapper.DnDVetoException;
 import net.antonioshome.swing.treewrapper.TreeTreeDnDEvent;
 import net.antonioshome.swing.treewrapper.TreeTreeDnDListener;
 import net.antonioshome.swing.treewrapper.TreeWrapper;
-import net.sf.jlayercheck.util.XMLConfigurationParser;
+import net.sf.jlayercheck.util.XMLConfiguration;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
 import net.sf.jlayercheck.util.modeltree.DefaultModelTree;
 import net.sf.jlayercheck.util.modeltree.ModuleNode;
@@ -28,9 +28,9 @@ public class ModelPackageClassTree extends JTree {
 	 */
 	private static final long serialVersionUID = 8017813199550063002L;
 
-	protected XMLConfigurationParser xmlConfiguration;
+	protected XMLConfiguration xmlConfiguration;
 	
-	public ModelPackageClassTree(XMLConfigurationParser xmlconf) {
+	public ModelPackageClassTree(XMLConfiguration xmlconf) {
 		this.xmlConfiguration = xmlconf;
 		
 		setCellRenderer(new DependenciesTreeCellRenderer());
@@ -67,11 +67,11 @@ public class ModelPackageClassTree extends JTree {
 		getXmlConfiguration().cumulateDependencyViolations(((DefaultModelTree) getModel().getRoot()));
 	}
 	
-	public XMLConfigurationParser getXmlConfiguration() {
+	public XMLConfiguration getXmlConfiguration() {
 		return xmlConfiguration;
 	}
 
-	public void setXmlConfiguration(XMLConfigurationParser xmlConfiguration) {
+	public void setXmlConfiguration(XMLConfiguration xmlConfiguration) {
 		this.xmlConfiguration = xmlConfiguration;
 	}
 

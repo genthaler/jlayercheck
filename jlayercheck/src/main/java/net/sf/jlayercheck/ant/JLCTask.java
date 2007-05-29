@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
 
 import net.sf.jlayercheck.util.DependencyVisitor;
 import net.sf.jlayercheck.util.HTMLOutput;
+import net.sf.jlayercheck.util.XMLConfiguration;
 import net.sf.jlayercheck.util.XMLConfigurationParser;
 import net.sf.jlayercheck.util.model.ClassSource;
 
@@ -75,7 +76,7 @@ public class JLCTask {
 		try {
 			// read config
 			InputStream confIn = new FileInputStream(config);
-			XMLConfigurationParser xcp = new XMLConfigurationParser(confIn);
+			XMLConfiguration xcp = new XMLConfigurationParser().parse(confIn);
 
 			// prepare outdir
 			File outDir = getOutDir();

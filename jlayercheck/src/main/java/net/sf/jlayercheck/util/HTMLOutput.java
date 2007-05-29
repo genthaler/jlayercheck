@@ -47,7 +47,7 @@ public class HTMLOutput {
      * @param xcp the configuration that determines the architecture
      * @throws IOException
      */
-	public void write(DependencyVisitor dv, XMLConfigurationParser xcp) throws IOException {
+	public void write(DependencyVisitor dv, XMLConfiguration xcp) throws IOException {
 		// create necessary output directories
 		new File(outputDir).mkdirs();
 		
@@ -129,7 +129,7 @@ public class HTMLOutput {
 	 * @throws IOException
 	 * @throws OverlappingModulesDefinitionException
 	 */
-	protected void writeDependencyViolations(DependencyVisitor dv, XMLConfigurationParser xcp, PrintWriter pw, Map<String, Map<String, ClassDependency>> unallowedDependencies, Map<String, URL> sourceFiles) throws IOException, OverlappingModulesDefinitionException {
+	protected void writeDependencyViolations(DependencyVisitor dv, XMLConfiguration xcp, PrintWriter pw, Map<String, Map<String, ClassDependency>> unallowedDependencies, Map<String, URL> sourceFiles) throws IOException, OverlappingModulesDefinitionException {
 		pw.println("<h1>Dependency violations by packages:</h1>");
 		for(String packagename : dv.getPackages().keySet()) {
 			boolean wrotePackageHeader = false;
@@ -183,7 +183,7 @@ public class HTMLOutput {
 		}
 	}
 
-	protected void writeOrphanedClasses(DependencyVisitor dv, XMLConfigurationParser xcp, PrintWriter pw) {
+	protected void writeOrphanedClasses(DependencyVisitor dv, XMLConfiguration xcp, PrintWriter pw) {
 		Set<String> orphanedClasses;
 		pw.println("<br/>");
 		pw.println("<h1><img src=\"images/class.png\" /> Orphaned classes:</h1>");
