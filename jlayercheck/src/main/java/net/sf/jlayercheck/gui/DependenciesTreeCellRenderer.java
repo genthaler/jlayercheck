@@ -3,10 +3,13 @@ package net.sf.jlayercheck.gui;
 import java.awt.Color;
 import java.awt.Component;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.TreeCellRenderer;
 
-import net.sf.jlayercheck.util.modeltree.DependentClassNode;
+import net.sf.jlayercheck.util.modeltree.ClassNode;
+import net.sf.jlayercheck.util.modeltree.PackageNode;
 import net.sf.jlayercheck.util.modeltree.UnallowedOrAllowedDependency;
 
 /**
@@ -22,6 +25,9 @@ public class DependenciesTreeCellRenderer extends ModelPackageClassRenderer
 	 */
 	private static final long serialVersionUID = -5484285023121201745L;
 
+	protected Icon classIcon = new ImageIcon(getClass().getResource("/class.png"));
+	protected Icon packageIcon = new ImageIcon(getClass().getResource("/package.png"));
+	
 	@Override
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 		if (value instanceof UnallowedOrAllowedDependency) {
@@ -30,13 +36,21 @@ public class DependenciesTreeCellRenderer extends ModelPackageClassRenderer
 			if (dcn.isUnallowedDependency()) {
 				setTextNonSelectionColor(Color.RED);
 			} else {
-				setTextNonSelectionColor(Color.GREEN);
+				setTextNonSelectionColor(new Color(0, 128, 0));
 			}
 		} else {
 			setTextNonSelectionColor(null);
 		}
+
+		Component result = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+
+		if (value instanceof ClassNode) {
+			setIcon(classIcon);
+		}
+		if (value instanceof PackageNode) {
+			setIcon(packageIcon);
+		}
 		
-		return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-				row, hasFocus);
+		return result;
 	}
 }
