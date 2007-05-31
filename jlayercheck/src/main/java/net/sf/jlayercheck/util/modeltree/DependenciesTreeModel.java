@@ -31,7 +31,7 @@ public class DependenciesTreeModel extends DefaultTreeModel {
 	 * 
 	 * @param depTree the tree to update
 	 * @param cd the dependency to add
-	 * @param depClass the node that has the dependency to add
+	 * @param depClass the node that has the dependency to add and is used to retrieve the package and model node
 	 */
 	public void addClassNodeToDependentModelTree(DependentModelTree depTree, ClassDependency cd, ClassNode depClass) {
 		

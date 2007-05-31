@@ -568,7 +568,9 @@ public class XMLConfiguration {
 			
 			ClassNode depClass = treemodel.getClassNode(cd.getDependency());
 			
-			modelToUpdate.addClassNodeToDependentModelTree(depTree, cd, depClass);
+			if (!cd.getDependency().equals(node.getName())) {
+				modelToUpdate.addClassNodeToDependentModelTree(depTree, cd, depClass);
+			}
 		}
 		
 		// compute unallowed dependency marks
@@ -646,9 +648,13 @@ public class XMLConfiguration {
 					for(ClassDependency cd : cn.getClassDependencies()) {
 						if (cd.getDependency().equals(node.getName())) {
 							// Class cn has a dependency to this class
-							ClassNode depClass = treemodel.getClassNode(cd.getDependency());
-							ClassDependency ncd = new ClassDependency(cn.getName());
-							modelToUpdate.addClassNodeToDependentModelTree(depTree, ncd, node);
+							
+							// only add it if dependency and origin are not the same
+							if (!cn.getName().equals(node.getName())) {
+								ClassNode depClass = treemodel.getClassNode(cn.getName());
+								ClassDependency ncd = new ClassDependency(cn.getName());
+								modelToUpdate.addClassNodeToDependentModelTree(depTree, ncd, depClass);
+							}
 						}
 					}
 				}
@@ -679,6 +685,7 @@ public class XMLConfiguration {
 									ModuleNode sourceModule = (ModuleNode) sourcePackage.getParent();
 									
 									if (!dModule.isUnassignedModule() && !sourceModule.isUnassignedModule()) {
+										System.out.println("d: "+dModule.getName()+" s: "+sourceModule.getName());
 										unallowedDependency = isUnallowedDependency(dModule, sourceModule);
 									}
 								}

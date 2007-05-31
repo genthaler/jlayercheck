@@ -89,8 +89,8 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 		incomingList = new DependenciesTree();
 		JScrollPane scrollDepIn = new JScrollPane(incomingList);
 		
-		JSplitPane splitDep = new JSplitPane(JSplitPane.VERTICAL_SPLIT, incomingList, outgoingList);
-		splitDep.setDividerLocation(0.5d);
+		JSplitPane splitDep = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollDepIn, scrollDepOut);
+		splitDep.setDividerLocation(250);
 		
 		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, splitDep);
 		getContentPane().add(split);
