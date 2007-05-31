@@ -534,6 +534,10 @@ public class XMLConfiguration {
 							pnUnallowed = true;
 							mnUnallowed = true;
 						}
+						
+						dtm = new DependenciesTreeModel();
+						dtm.setRoot(createIncomingModel(dcn, mt, dtm));
+						dcn.setIncomingDependenciesTreeModel(dtm);
 					}
 				}
 				
@@ -568,8 +572,91 @@ public class XMLConfiguration {
 		}
 		
 		// compute unallowed dependency marks
+		boolean treeUnallowed = false;
+		for(ModuleNode mn : depTree.getModules()) {
+			boolean mnUnallowed = false;
+			for(PackageNode pn : mn.getPackages()) {
+				boolean pnUnallowed = false;
+				for (ClassNode cn : pn.getClasses()) {
+					if (cn instanceof DependentClassNode) {
+						DependentClassNode dcn = (DependentClassNode) cn;
+						
+						// recompute if dependency is allowed
+						boolean unallowedDependency = false;
+						if (!pn.isUnassignedPackage()) {
+							ModuleNode dModule = mn;
+							ClassNode sourceClass = node;
+	
+							if (sourceClass !=null) {
+								PackageNode sourcePackage = (PackageNode) sourceClass.getParent();
+	
+								if (!sourcePackage.isUnassignedPackage()) {
+									ModuleNode sourceModule = (ModuleNode) sourcePackage.getParent();
+									
+									if (!dModule.isUnassignedModule() && !sourceModule.isUnassignedModule()) {
+										unallowedDependency = isUnallowedDependency(sourceModule, dModule);
+									}
+								}
+							} else {
+								unallowedDependency = true;
+							}
+						}
+						dcn.getClassDependency().setUnallowedDependency(unallowedDependency);
+						
+						if (dcn.getClassDependency().isUnallowedDependency()) {
+							pnUnallowed = true;
+							mnUnallowed = true;
+							treeUnallowed = true;
+						}
+					}
+				}
+				
+				if (pn instanceof DependentPackageNode) {
+					((DependentPackageNode) pn).setUnallowedDependency(pnUnallowed);
+				}
+			}
+	
+			if (mn instanceof DependentModuleNode) {
+				((DependentModuleNode) mn).setUnallowedDependency(mnUnallowed);
+			}
+		}
+		depTree.setUnallowedDependency(treeUnallowed);
 		
+		// sort nodes and sort the "unassigned" node to the end
+		depTree.sortNodes();
 		
+		return depTree;
+	}
+
+	/**
+	 * Creates a dependency tree model for the given node of the given ModelTree.
+	 * 
+	 * @param node
+	 * @param treemodel
+	 * @param xmlconf the configuration used to determine which dependencies are allowed
+	 * @return
+	 */
+	public TreeNode createIncomingModel(ClassNode node, ModelTree treemodel, DependenciesTreeModel modelToUpdate) {
+		DependentModelTree depTree = new DependentModelTree();
+		
+		// build tree from incoming references
+		for(ModuleNode mn : treemodel.getModules()) {
+			for(PackageNode pn : mn.getPackages()) {
+				for (ClassNode cn : pn.getClasses()) {
+					for(ClassDependency cd : cn.getClassDependencies()) {
+						if (cd.getDependency().equals(node.getName())) {
+							// Class cn has a dependency to this class
+							ClassNode depClass = treemodel.getClassNode(cd.getDependency());
+							ClassDependency ncd = new ClassDependency(cn.getName());
+							modelToUpdate.addClassNodeToDependentModelTree(depTree, ncd, node);
+						}
+					}
+				}
+			}
+			
+		}
+		
+		// compute unallowed dependency marks
 		boolean treeUnallowed = false;
 		for(ModuleNode mn : depTree.getModules()) {
 			boolean mnUnallowed = false;
@@ -592,7 +679,7 @@ public class XMLConfiguration {
 									ModuleNode sourceModule = (ModuleNode) sourcePackage.getParent();
 									
 									if (!dModule.isUnassignedModule() && !sourceModule.isUnassignedModule()) {
-										unallowedDependency = isUnallowedDependency(sourceModule, dModule);
+										unallowedDependency = isUnallowedDependency(dModule, sourceModule);
 									}
 								}
 							} else {

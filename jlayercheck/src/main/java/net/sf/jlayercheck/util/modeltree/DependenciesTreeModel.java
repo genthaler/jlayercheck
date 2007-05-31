@@ -29,9 +29,9 @@ public class DependenciesTreeModel extends DefaultTreeModel {
 	/**
 	 * Adds the given ClassNode to the given DependentModelTree.
 	 * 
-	 * @param depTree
-	 * @param cd
-	 * @param depClass
+	 * @param depTree the tree to update
+	 * @param cd the dependency to add
+	 * @param depClass the node that has the dependency to add
 	 */
 	public void addClassNodeToDependentModelTree(DependentModelTree depTree, ClassDependency cd, ClassNode depClass) {
 		

@@ -6,6 +6,7 @@ public class DependentClassNode extends DefaultClassNode implements UnallowedOrA
 
 	protected ClassDependency classDependency;
 	protected DependenciesTreeModel dependenciesTreeModel;
+	protected DependenciesTreeModel incomingDependenciesTreeModel;
 	
 	public DependentClassNode(ClassDependency cd) {
 		super(cd.getDependency());
@@ -41,5 +42,13 @@ public class DependentClassNode extends DefaultClassNode implements UnallowedOrA
 
 	public void setDependenciesTreeModel(DependenciesTreeModel dependenciesTreeModel) {
 		this.dependenciesTreeModel = dependenciesTreeModel;
+	}
+
+	public void setIncomingDependenciesTreeModel(DependenciesTreeModel dtm) {
+		this.incomingDependenciesTreeModel = dtm;
+	}
+
+	public DependenciesTreeModel getIncomingDependenciesTreeModel() {
+		return incomingDependenciesTreeModel;
 	}
 }

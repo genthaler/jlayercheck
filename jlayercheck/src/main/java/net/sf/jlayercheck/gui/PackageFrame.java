@@ -49,7 +49,8 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 	 */
 	private static final long serialVersionUID = -8443924981257381579L;
 
-	protected DependenciesTree list;
+	protected DependenciesTree outgoingList;
+	protected DependenciesTree incomingList;
 	
 	protected ModelTree modeltree;
 	
@@ -82,10 +83,16 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 		JScrollPane scroll = new JScrollPane(testtree);
 		testtree.getSelectionModel().addTreeSelectionListener(this);
 
-		list = new DependenciesTree();
-		JScrollPane scrollDep = new JScrollPane(list);
+		outgoingList = new DependenciesTree();
+		JScrollPane scrollDepOut = new JScrollPane(outgoingList);
 		
-		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, scrollDep);
+		incomingList = new DependenciesTree();
+		JScrollPane scrollDepIn = new JScrollPane(incomingList);
+		
+		JSplitPane splitDep = new JSplitPane(JSplitPane.VERTICAL_SPLIT, incomingList, outgoingList);
+		splitDep.setDividerLocation(0.5d);
+		
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, splitDep);
 		getContentPane().add(split);
 	}
 	
@@ -104,43 +111,93 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 	public void valueChanged(TreeSelectionEvent e) {
 		if (e.getNewLeadSelectionPath() != null) {
 			Object selected = e.getNewLeadSelectionPath().getLastPathComponent();
+			
 			DependenciesTreeModel model = null;
-			if (selected instanceof DependentClassNode) {
-				model = ((DependentClassNode) selected).getDependenciesTreeModel();
-			}
-			if (selected instanceof DependentPackageNode) {
-				model = new DependenciesTreeModel();
-				
-				// cumulate all dependencies from all contained classes
-				mergePackage((DependentPackageNode) selected, model);
-			}
-			if (selected instanceof DependentModuleNode) {
-				model = new DependenciesTreeModel();
-				
-				// cumulate all dependencies from all contained classes
-				DependentModuleNode dmn = (DependentModuleNode) selected;
-
-				for(PackageNode pn : dmn.getPackages()) {
-					if (pn instanceof DependentPackageNode) {
-						DependentPackageNode dpn = (DependentPackageNode) pn;
-						
-						mergePackage(dpn, model);
-					}
-				}
-			}
+			
+			// outgoing dependencies
+			model = getOutgoingModel(selected, model);
 			
 			// show the created model
 			if (model != null) {
-				list.setModel(model);
+				outgoingList.setModel(model);
 				
-				list.expandAll();
+				outgoingList.expandAll();
 				
 				// collapse "unassigned"
 				if (((ModelTree) model.getRoot()).getUnassignedModule() != null) {
-					list.collapsePath(new TreePath(new Object[] {list.getModel().getRoot(), ((ModelTree) model.getRoot()).getUnassignedModule()}));
+					outgoingList.collapsePath(new TreePath(new Object[] {outgoingList.getModel().getRoot(), ((ModelTree) model.getRoot()).getUnassignedModule()}));
+				}
+			}
+			
+			// incoming dependencies
+			model = getIncomingModel(selected, model);
+			
+			// show the created model
+			if (model != null) {
+				incomingList.setModel(model);
+				
+				incomingList.expandAll();
+				
+				// collapse "unassigned"
+				if (((ModelTree) model.getRoot()).getUnassignedModule() != null) {
+					incomingList.collapsePath(new TreePath(new Object[] {incomingList.getModel().getRoot(), ((ModelTree) model.getRoot()).getUnassignedModule()}));
 				}
 			}
 		}
+	}
+
+	protected DependenciesTreeModel getIncomingModel(Object selected, DependenciesTreeModel model) {
+		if (selected instanceof DependentClassNode) {
+			model = ((DependentClassNode) selected).getIncomingDependenciesTreeModel();
+		}
+		if (selected instanceof DependentPackageNode) {
+			model = new DependenciesTreeModel();
+			
+			// cumulate all dependencies from all contained classes
+			mergeIncomingPackage((DependentPackageNode) selected, model);
+		}
+		if (selected instanceof DependentModuleNode) {
+			model = new DependenciesTreeModel();
+			
+			// cumulate all dependencies from all contained classes
+			DependentModuleNode dmn = (DependentModuleNode) selected;
+
+			for(PackageNode pn : dmn.getPackages()) {
+				if (pn instanceof DependentPackageNode) {
+					DependentPackageNode dpn = (DependentPackageNode) pn;
+					
+					mergeIncomingPackage(dpn, model);
+				}
+			}
+		}
+		return model;
+	}
+
+	protected DependenciesTreeModel getOutgoingModel(Object selected, DependenciesTreeModel model) {
+		if (selected instanceof DependentClassNode) {
+			model = ((DependentClassNode) selected).getDependenciesTreeModel();
+		}
+		if (selected instanceof DependentPackageNode) {
+			model = new DependenciesTreeModel();
+			
+			// cumulate all dependencies from all contained classes
+			mergePackage((DependentPackageNode) selected, model);
+		}
+		if (selected instanceof DependentModuleNode) {
+			model = new DependenciesTreeModel();
+			
+			// cumulate all dependencies from all contained classes
+			DependentModuleNode dmn = (DependentModuleNode) selected;
+
+			for(PackageNode pn : dmn.getPackages()) {
+				if (pn instanceof DependentPackageNode) {
+					DependentPackageNode dpn = (DependentPackageNode) pn;
+					
+					mergePackage(dpn, model);
+				}
+			}
+		}
+		return model;
 	}
 
 	protected void mergePackage(DependentPackageNode dpn, DependenciesTreeModel model) {
@@ -149,6 +206,16 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 				DependentClassNode dcn = (DependentClassNode) cn;
 				
 				model.merge((DependentModelTree) dcn.getDependenciesTreeModel().getRoot());
+			}
+		}
+	}
+
+	protected void mergeIncomingPackage(DependentPackageNode dpn, DependenciesTreeModel model) {
+		for(ClassNode cn : dpn.getClasses()) {
+			if (cn instanceof DependentClassNode) {
+				DependentClassNode dcn = (DependentClassNode) cn;
+				
+				model.merge((DependentModelTree) dcn.getIncomingDependenciesTreeModel().getRoot());
 			}
 		}
 	}
