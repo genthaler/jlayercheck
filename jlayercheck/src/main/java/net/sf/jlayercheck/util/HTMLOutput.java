@@ -134,7 +134,6 @@ public class HTMLOutput {
 		for(String packagename : dv.getPackages().keySet()) {
 			boolean wrotePackageHeader = false;
 			for(String classname : dv.getPackages().get(packagename)) {
-				String classPackageName = StringUtils.getPackageName(classname);
 				String classmodule = xcp.getMatchingModule(classname);
 
 				if (unallowedDependencies.get(classname) != null) {

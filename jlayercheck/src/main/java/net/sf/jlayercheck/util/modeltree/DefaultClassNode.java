@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import net.sf.jlayercheck.gui.PackageFrame;
 import net.sf.jlayercheck.util.model.ClassDependency;
 
 /**

@@ -337,10 +337,7 @@ public class XMLConfiguration {
 		Map<String, Map<String, ClassDependency>> unallowedDependencies = new TreeMap<String, Map<String, ClassDependency>>();
 		
 		for(String classname : dependencies.keySet()) {
-			String classPackageName = StringUtils.getPackageName(classname);
 			for(String dependency : dependencies.get(classname).keySet()) {
-				String dependencyPackageName = StringUtils.getPackageName(dependency);
-				
 				// check if packagename is an allowed dependency for classname
 				if (isUnallowedDependency(classname, dependency)) {
 					Map<String, ClassDependency> depList = unallowedDependencies.get(classname);
@@ -525,7 +522,9 @@ public class XMLConfiguration {
 		for(Set<String> classes : dv.getPackages().values()) {
 			for(String clazz : classes) {
 				ClassNode cn = mt.getClassNode(clazz);
-				cn.removeFromParent();
+				if (cn != null) {
+					cn.removeFromParent();
+				}
 			}
 		}
 		
