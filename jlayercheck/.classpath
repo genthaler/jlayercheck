@@ -6,7 +6,7 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/asm/asm/3.0/asm-3.0.jar" sourcepath="/DOWNLOADS/asm-src-attachment-selfmade.zip"/>
+	<classpathentry exported="true" kind="var" path="M2_REPO/asm/asm/3.0/asm-3.0.jar" sourcepath="/DOWNLOADS/asm-src-attachment-selfmade.zip"/>
 	<classpathentry kind="var" path="M2_REPO/de/java2html/java2html/5.0/java2html-5.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/velocity/velocity/1.5/velocity-1.5.jar" sourcepath="/M2_SRC/velocity-1.5/src/java"/>
 	<classpathentry kind="var" path="M2_REPO/oro/oro/2.0.8/oro-2.0.8.jar"/>
@@ -16,5 +16,6 @@
 	<classpathentry kind="var" path="M2_REPO/jgrapht/jgrapht/0.7.1/jgrapht-0.7.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/jgraph/jgraph/5.8.3.1/jgraph-5.8.3.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/treewrapper/treewrapper/2.0/treewrapper-2.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

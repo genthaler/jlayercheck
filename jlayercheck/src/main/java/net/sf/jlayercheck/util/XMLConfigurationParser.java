@@ -1,5 +1,7 @@
 package net.sf.jlayercheck.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.TreeSet;
@@ -25,10 +27,34 @@ import org.xml.sax.SAXException;
 public class XMLConfigurationParser {
 	protected static Logger logger = Logger.getLogger("JLayerCheck"); 
 
+	protected String basedir = ".";
+	
+	public String getBasedir() {
+		return basedir;
+	}
+
+	public void setBasedir(String basedir) {
+		this.basedir = basedir;
+	}
+
 	/**
 	 * Creates a new parser object that can be used to create XMLConfiguration objects.
 	 */
 	public XMLConfigurationParser() {
+	}
+
+    /**
+     * Parses the given configuration file and creates an XMLConfiguration object.
+     * 
+     * @param is InputStream that points to an XML configuration file
+     * @throws ConfigurationException 
+     * @throws SAXException
+     * @throws IOException
+     * @throws ParserConfigurationException 
+     */
+	public XMLConfiguration parse(File f) throws ConfigurationException, SAXException, IOException, ParserConfigurationException {
+		setBasedir(f.getParentFile().getAbsolutePath());
+		return parse(new FileInputStream(f));
 	}
 	
     /**
@@ -158,7 +184,7 @@ public class XMLConfigurationParser {
 				if (sourceNode.getNodeName().equals("filesystem")) {
 					logger.finer("Filesystem: "+elemSource.getAttribute("bin"));
 					
-					xmlConf.addClassSource(new FilesystemClassSource(elemSource.getAttribute("bin"), elemSource.getAttribute("src")));
+					xmlConf.addClassSource(new FilesystemClassSource(getBasedir(), elemSource.getAttribute("bin"), elemSource.getAttribute("src")));
 				}
 			}
 		}

@@ -20,13 +20,17 @@ public class FilesystemClassSource implements ClassSource {
 	/** Path to the .java files */
 	protected String src;
 	
-	public FilesystemClassSource(String bin, String src) {
+	/** Directory where the other pathes are relative to */
+	protected String basedir;
+	
+	public FilesystemClassSource(String basedir, String bin, String src) {
+		this.basedir = basedir;
 		this.bin = bin;
 		this.src = src;
 	}
 	
     public void call(ClassVisitor v) throws IOException {
-		File f = new File(getBin());
+		File f = new File(getBasedir(), getBin());
 
         checkDirectory(v, f);
 	}
@@ -105,5 +109,13 @@ public class FilesystemClassSource implements ClassSource {
 
 	public void setSrc(String src) {
 		this.src = src;
+	}
+
+	public String getBasedir() {
+		return basedir;
+	}
+
+	public void setBasedir(String basedir) {
+		this.basedir = basedir;
 	}
 }

@@ -685,7 +685,6 @@ public class XMLConfiguration {
 									ModuleNode sourceModule = (ModuleNode) sourcePackage.getParent();
 									
 									if (!dModule.isUnassignedModule() && !sourceModule.isUnassignedModule()) {
-										System.out.println("d: "+dModule.getName()+" s: "+sourceModule.getName());
 										unallowedDependency = isUnallowedDependency(dModule, sourceModule);
 									}
 								}
