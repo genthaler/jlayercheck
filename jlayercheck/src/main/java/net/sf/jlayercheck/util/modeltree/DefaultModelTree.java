@@ -130,4 +130,24 @@ public class DefaultModelTree extends DefaultMutableTreeNode implements ModelTre
 		
 		return null;
 	}
+
+	public void merge(ModelTree additionalModelTree) {
+		for(ModuleNode mn : additionalModelTree.getModules()) {
+			for(PackageNode pn : mn.getPackages()) {
+				for(ClassNode cn : pn.getClasses()) {
+					ModuleNode thisMn = getModule(mn.getModuleName());
+					if (thisMn == null) {
+						thisMn = new DependentModuleNode(mn.getModuleName());
+						add(thisMn);
+					}
+					PackageNode thisPn = thisMn.getPackage(pn.getPackagename());
+					if (thisPn == null) {
+						thisPn = new DependentPackageNode(pn.getPackagename());
+						thisMn.add(thisPn);
+					}
+					thisPn.add(cn);
+				}
+			}
+		}
+	}
 }

@@ -1,5 +1,9 @@
 package net.sf.jlayercheck.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,6 +32,8 @@ import net.sf.jlayercheck.util.modeltree.ModelTree;
 import net.sf.jlayercheck.util.modeltree.ModuleNode;
 import net.sf.jlayercheck.util.modeltree.PackageNode;
 import net.sf.jlayercheck.util.modeltree.UnallowedOrAllowedDependency;
+
+import org.objectweb.asm.ClassReader;
 
 /**
  * <p>Contains a configuration that describes the architecture of the project.
@@ -498,6 +504,35 @@ public class XMLConfiguration {
     	return result;
     }
 
+    /**
+     * Updates the given modeltree by replacing all information of the given classFile with
+     * new information.
+     * 
+     * @param mt
+     * @param dv
+     * @param classFile
+     * @throws OverlappingModulesDefinitionException 
+     * @throws IOException 
+     * @throws FileNotFoundException 
+     */
+    public void updateModelTree(ModelTree mt, File classFile) throws OverlappingModulesDefinitionException, FileNotFoundException, IOException {
+    	DependencyVisitor dv = new DependencyVisitor();
+    	
+    	// let the DependencyVisitor retrieve the information from the classFile
+		new ClassReader(new FileInputStream(classFile)).accept(dv, 0);
+		
+		// replace the information in the modeltree
+		for(Set<String> classes : dv.getPackages().values()) {
+			for(String clazz : classes) {
+				ClassNode cn = mt.getClassNode(clazz);
+				cn.removeFromParent();
+			}
+		}
+		
+		ModelTree additionalModelTree = getModelTree(dv);
+		mt.merge(additionalModelTree);
+    }
+    
     /**
      * Returns true if the module sourceModule may access destModule.
      * 

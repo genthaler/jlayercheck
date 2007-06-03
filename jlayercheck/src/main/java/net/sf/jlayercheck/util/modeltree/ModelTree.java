@@ -27,4 +27,11 @@ public interface ModelTree extends TreeNode {
 	 * @return "unassigned" ModuleNode
 	 */
 	public ModuleNode getUnassignedModule();
+
+	/**
+	 * Merges the given tree into this one.
+	 * 
+	 * @param additionalModelTree
+	 */
+	public void merge(ModelTree additionalModelTree);
 }

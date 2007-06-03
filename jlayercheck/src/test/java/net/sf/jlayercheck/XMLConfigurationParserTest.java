@@ -1,5 +1,6 @@
 package net.sf.jlayercheck;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
@@ -14,6 +15,7 @@ import net.sf.jlayercheck.util.XMLConfiguration;
 import net.sf.jlayercheck.util.XMLConfigurationParser;
 import net.sf.jlayercheck.util.model.ClassDependency;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
+import net.sf.jlayercheck.util.modeltree.DefaultModelTree;
 import net.sf.jlayercheck.util.modeltree.ModelTree;
 import net.sf.jlayercheck.util.modeltree.ModuleNode;
 import net.sf.jlayercheck.util.modeltree.PackageNode;
@@ -134,5 +136,27 @@ public class XMLConfigurationParserTest extends TestCase {
 		assertTrue(moduleUtilFound);
 		assertTrue(packageJLayerCheckFound);
 		assertTrue(classXMLConfigurationFound);
+	}
+	
+	public void testModelUpdate() throws Exception {
+		// load and parse configuration, class and java files
+		InputStream is = getClass().getResource("/jlayercheck_test.xml").openStream();
+		XMLConfiguration xcp = new XMLConfigurationParser().parse(is);
+		DependencyVisitor dv = new DependencyVisitor();
+		xcp.getClassSources().get(0).call(dv);
+
+		DefaultModelTree mt = (DefaultModelTree) xcp.getModelTree(dv);
+		
+		assertTrue(mt != null);
+		assertTrue(mt.getChildCount() > 0);
+		
+		ClassNode cn = mt.getModule("util").getPackage("net/sf/jlayercheck/util").getClass("net/sf/jlayercheck/util/HTMLOutput");
+		assertTrue(cn != null);
+		
+		xcp.updateModelTree(mt, new File("target/classes/net/sf/jlayercheck/util/HTMLOutput.class"));
+		
+		ClassNode cn2 = mt.getModule("util").getPackage("net/sf/jlayercheck/util").getClass("net/sf/jlayercheck/util/HTMLOutput");
+		assertTrue(cn2 != null);
+		assertTrue(cn != cn2);
 	}
 }
