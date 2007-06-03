@@ -124,6 +124,10 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 			IFile file = (IFile) resource;
 			deleteMarkers(file);
 
+			if (mt == null) {
+				refreshArchitecture(file);
+			}
+			
 			ICompilationUnit compilationUnit = (ICompilationUnit) JavaCore.createCompilationUnitFrom(file);
 			try {
 				IPackageDeclaration pd[] = compilationUnit.getPackageDeclarations();
