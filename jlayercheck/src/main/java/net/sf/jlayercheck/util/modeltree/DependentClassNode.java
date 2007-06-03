@@ -4,6 +4,10 @@ import net.sf.jlayercheck.util.model.ClassDependency;
 
 public class DependentClassNode extends DefaultClassNode implements UnallowedOrAllowedDependency {
 
+	/**
+	 * Serial
+	 */
+	private static final long serialVersionUID = -1847980422895139419L;
 	protected ClassDependency classDependency;
 	protected DependenciesTreeModel dependenciesTreeModel;
 	protected DependenciesTreeModel incomingDependenciesTreeModel;
