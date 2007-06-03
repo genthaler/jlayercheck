@@ -9,6 +9,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.sf.jlayercheck.util.DependencyVisitor;
 import net.sf.jlayercheck.util.XMLConfiguration;
 import net.sf.jlayercheck.util.XMLConfigurationParser;
+import net.sf.jlayercheck.util.exceptions.ConfigurationException;
 import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
 import net.sf.jlayercheck.util.model.ClassDependency;
 import net.sf.jlayercheck.util.model.ClassSource;
@@ -34,6 +35,11 @@ import org.xml.sax.SAXException;
 
 public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 
+	/**
+	 * Contains the dependency informations of all classes.
+	 */
+	protected ModelTree mt;
+	
 	class JLayerCheckDeltaVisitor implements IResourceDeltaVisitor {
 		/*
 		 * (non-Javadoc)
@@ -108,12 +114,17 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	void check(IResource resource) {
+	protected void check(IResource resource) {
+		if (resource instanceof IFile && resource.getName().endsWith("jlayercheck.xml")) {
+			IFile file = (IFile) resource;
+			
+			refreshArchitecture(file);
+		}
 		if (resource instanceof IFile && resource.getName().endsWith(".java")) {
 			IFile file = (IFile) resource;
 			deleteMarkers(file);
 
-			ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom(file);
+			ICompilationUnit compilationUnit = (ICompilationUnit) JavaCore.createCompilationUnitFrom(file);
 			try {
 				IPackageDeclaration pd[] = compilationUnit.getPackageDeclarations();
 				String p = "";
@@ -123,56 +134,88 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 
 				String classname = p.replace(".", "/").concat("/").concat(file.getName()).replaceAll(".java$", "");
 
+				File classOutputPath = JavaCore.create(file.getProject()).getOutputLocation().toFile();
+				File basepath = file.getProject().getParent().getLocation().toFile();
+				File classfilename = new File(new File(basepath, classOutputPath.toString()), classname+".class");
+				
 				// refresh architectural model
+				File fi = file.getProject().getFile("/jlayercheck.xml").getRawLocation().toFile();
+				XMLConfiguration xcp;
 				try {
-					File fi = file.getProject().getFile("/jlayercheck.xml").getRawLocation().toFile();
-					XMLConfiguration xcp = new XMLConfigurationParser().parse(fi);
-					DependencyVisitor dv = new DependencyVisitor();
-//					Map<String, URL> javaSources = new TreeMap<String, URL>();
-					for(ClassSource source : xcp.getClassSources()) {
-						source.call(dv);
-//						javaSources.putAll(source.getSourceFiles());
-					}
-
-					ModelTree mt = xcp.getModelTree(dv);
-					ClassNode cn = mt.getClassNode(classname);
-
-					if (cn != null) {
-						String modulename = ((ModuleNode) cn.getParent().getParent()).getModuleName();
-						for(ClassDependency cd : cn.getClassDependencies()) {
-							if (cd.isUnallowedDependency()) {
-
-								ClassNode cndest = mt.getClassNode(cd.getDependency());
-								String moduledest = "";
-								if (cndest != null) {
-									moduledest = ((ModuleNode) cndest.getParent().getParent()).getModuleName();
-								}
-
-								// add markers
-								for(Integer linenumber : cd.getLineNumbers()) {
-
-									String msg = "Module " + modulename + " should not access " + cd.getDependency().replace("/", ".") + " (" + moduledest +")";
-									addMarker(file, msg, linenumber.intValue(), IMarker.SEVERITY_WARNING);
-								}						
-							}
-						}
-					}
-				} catch (IOException e) {
+					xcp = new XMLConfigurationParser().parse(fi);
+					xcp.updateModelTree(mt, classfilename);
+				} catch (ConfigurationException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (OverlappingModulesDefinitionException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (net.sf.jlayercheck.util.exceptions.ConfigurationException e) {
-					e.printStackTrace();
+				}
+
+				ClassNode cn = mt.getClassNode(classname);
+
+				if (cn != null) {
+					String modulename = ((ModuleNode) cn.getParent().getParent()).getModuleName();
+					for(ClassDependency cd : cn.getClassDependencies()) {
+						if (cd.isUnallowedDependency()) {
+
+							ClassNode cndest = mt.getClassNode(cd.getDependency());
+							String moduledest = "";
+							if (cndest != null) {
+								moduledest = ((ModuleNode) cndest.getParent().getParent()).getModuleName();
+							}
+
+							// add markers
+							for(Integer linenumber : cd.getLineNumbers()) {
+
+								String msg = "Module " + modulename + " should not access " + cd.getDependency().replace("/", ".") + " (" + moduledest +")";
+								addMarker(file, msg, linenumber.intValue(), IMarker.SEVERITY_WARNING);
+							}						
+						}
+					}
 				}
 
 			} catch (JavaModelException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+
+	/**
+	 * Reloads all dependencies.
+	 * 
+	 * @param file
+	 */
+	protected void refreshArchitecture(IFile file) {
+		try {
+			File fi = file.getProject().getFile("/jlayercheck.xml").getRawLocation().toFile();
+			XMLConfiguration xcp = new XMLConfigurationParser().parse(fi);
+			DependencyVisitor dv = new DependencyVisitor();
+			for(ClassSource source : xcp.getClassSources()) {
+				source.call(dv);
+			}
+			mt = xcp.getModelTree(dv);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (OverlappingModulesDefinitionException e) {
+			e.printStackTrace();
+		} catch (net.sf.jlayercheck.util.exceptions.ConfigurationException e) {
+			e.printStackTrace();
 		}
 	}
 
