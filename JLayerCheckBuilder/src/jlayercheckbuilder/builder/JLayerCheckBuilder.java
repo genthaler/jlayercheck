@@ -33,6 +33,12 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.xml.sax.SAXException;
 
+/**
+ * This is the builder class that checks the dependencies of changed
+ * java files and adds markers to lines that violate the architecture.
+ * 
+ * @author webmaster@earth3d.org
+ */
 public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 
 	/**
@@ -78,8 +84,7 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 
 	private static final String MARKER_TYPE = "JLayerCheckBuilder.dependency";
 
-	private void addMarker(IFile file, String message, int lineNumber,
-			int severity) {
+	private void addMarker(IFile file, String message, int lineNumber, int severity) {
 		try {
 			IMarker marker = file.createMarker(MARKER_TYPE);
 			marker.setAttribute(IMarker.MESSAGE, message);
@@ -114,6 +119,11 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
+	/**
+	 * Implements the functionality to check for dependency violations.
+	 * 
+	 * @param resource to be checked, only java files are checked and changed to the jlayercheck.xml are recognized.
+	 */
 	protected void check(IResource resource) {
 		if (resource instanceof IFile && resource.getName().endsWith("jlayercheck.xml")) {
 			IFile file = (IFile) resource;
@@ -143,28 +153,9 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 				File classfilename = new File(new File(basepath, classOutputPath.toString()), classname+".class");
 				
 				// refresh architectural model
-				File fi = file.getProject().getFile("/jlayercheck.xml").getRawLocation().toFile();
-				XMLConfiguration xcp;
-				try {
-					xcp = new XMLConfigurationParser().parse(fi);
-					xcp.updateModelTree(mt, classfilename);
-				} catch (ConfigurationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SAXException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ParserConfigurationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (OverlappingModulesDefinitionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				refreshArchitectureIncremental(file, classfilename);
 
+				// create markers for dependency violations
 				ClassNode cn = mt.getClassNode(classname);
 
 				if (cn != null) {
@@ -189,9 +180,27 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 				}
 
 			} catch (JavaModelException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+
+	protected void refreshArchitectureIncremental(IFile file, File classfilename) {
+		File fi = file.getProject().getFile("/jlayercheck.xml").getRawLocation().toFile();
+		XMLConfiguration xcp;
+		try {
+			xcp = new XMLConfigurationParser().parse(fi);
+			xcp.updateModelTree(mt, classfilename);
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (OverlappingModulesDefinitionException e) {
+			e.printStackTrace();
 		}
 	}
 
