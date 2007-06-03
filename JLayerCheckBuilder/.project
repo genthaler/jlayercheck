@@ -3,7 +3,6 @@
 	<name>JLayerCheckBuilder</name>
 	<comment></comment>
 	<projects>
-		<project>jlayercheck</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
