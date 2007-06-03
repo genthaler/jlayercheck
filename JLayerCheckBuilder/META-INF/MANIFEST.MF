@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JLayerCheckBuilder Plug-in
+Bundle-SymbolicName: JLayerCheckBuilder; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: jlayercheckbuilder.Activator
+Bundle-Vendor: jlayercheck.sf.net
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.core
+Eclipse-LazyStart: true
+Bundle-ClassPath: .,
+ asm-3.0.jar,
+ jlayercheck-1.0-SNAPSHOT.jar
