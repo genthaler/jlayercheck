@@ -33,7 +33,7 @@
             nameFilter="*"
             id="JLayerCheckBuilder.contribution1">
          <action
-               label="Add/Remove Sample Nature"
+               label="Add/Remove JLayerCheck Nature"
                class="jlayercheckbuilder.builder.ToggleNatureAction"
                menubarPath="additions"
                enablesFor="+"
