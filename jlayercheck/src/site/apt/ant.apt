@@ -1,0 +1,14 @@
+  JLayerCheck can be used as an ant task. To make the task available
+  in your ant file, use the following task definition:
+  
+---
+ <taskdef name="jlayercheck" classname="net.sf.jlayercheck.ant.JLCTask"/>
+---
+
+  And to run this task use the following lines in a target:
+  
+---
+<jlayercheck config="jlayercheck.xml" outDir="target/html" />
+---
+
+  This will create a html report in the given directory.

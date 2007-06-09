@@ -1,14 +1,23 @@
-  For now the program is only available by checking it out from
+Library, Ant Task and Swing GUI
+
+  For now only the eclipse plugin is available as download (see below) 
+  the rest is only available by checking it out from
   {{{http://sourceforge.net/svn/?group_id=195208}sourceforge's subversion repository}}. 
   It contains one project for
   the library, including an html report generator, an ant task and
   a swing program that allows you to move classes around to see if
   this solves your dependency problems.
   
-  The other project is an eclipse plugin. It can be used to get warnings
+Eclipse Plugin
+
+  The eclipse plugin can be used to get warnings
   on all lines where you violate the dependencies defined in
   /jlayercheck.xml (in the project root). You have to put the configuration
   file there and activate the builder by right clicking on the project
   in the package explorer and clicking on "Add/Remove JLayerCheck Nature".
   Afterwards the "JLayerCheck Builder" should occur in the builders
   section of your project.
+
+  The name of the eclipse update site to install the plugin is:
+  
+  {{http://jlayercheck.sf.net/update-site}}

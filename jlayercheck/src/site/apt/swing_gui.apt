@@ -1,0 +1,13 @@
+  The following image shows the Swing GUI that can be used to inspect the incoming
+  and outgoing dependencies of modules, packages and classes. You can move classes
+  into other packages and see how the dependencies change. Dependency violations are
+  marked in red.
+  
+[images/screenshot_packageframe.png] Screenshot of the Swing GUI.
+
+  To run the Swing GUI, call the class PackageFrame with the name of your
+  jlayercheck.xml file:
+  
+---
+java -cp jlayercheck.jar net.sf.jlayercheck.gui.PackageFrame my_jlayercheck.xml
+---

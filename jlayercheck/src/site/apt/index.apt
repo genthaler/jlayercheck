@@ -10,8 +10,7 @@
   architecture checking during development. Markers are automatically added
   to the lines that violate your defined architecture.
   
-  There are no file releases yet, but you can get a working version from the
-  subversion repository.
+  For file releases please see the download page.
 
   The following image shows the Swing GUI that can be used to inspect the incoming
   and outgoing dependencies of modules, packages and classes. You can move classes

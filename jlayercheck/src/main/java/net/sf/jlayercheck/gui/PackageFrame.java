@@ -1,6 +1,7 @@
 package net.sf.jlayercheck.gui;
 
 import java.awt.BorderLayout;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -54,13 +55,18 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 	
 	protected ModelTree modeltree;
 	
-	public PackageFrame() throws IOException, SAXException, ParserConfigurationException, ConfigurationException, OverlappingModulesDefinitionException {
+	public PackageFrame(String filename) throws IOException, SAXException, ParserConfigurationException, ConfigurationException, OverlappingModulesDefinitionException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("JLayerCheck - jlayercheck.sf.net");
 		setSize(500, 500);
 
 		// load and parse configuration, class and java files
-		InputStream is = getClass().getResource("/jlayercheck.xml").openStream();
+		InputStream is = null;
+		if (filename == null) {
+			is = getClass().getResource("/jlayercheck.xml").openStream();
+		} else {
+			is = new FileInputStream(filename);
+		}
 		XMLConfiguration xcp = new XMLConfigurationParser().parse(is);
 		DependencyVisitor dv = new DependencyVisitor();
 		Map<String, URL> javaSources = new TreeMap<String, URL>();
@@ -105,7 +111,13 @@ public class PackageFrame extends JFrame implements TreeSelectionListener {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException, ConfigurationException, OverlappingModulesDefinitionException {
-		new PackageFrame().setVisible(true);
+		String filename = null;
+		if (args.length != 1) {
+			System.out.println("USAGE: PackageFrame jlayercheck.xml");
+		} else {
+			filename = args[0];
+		}
+		new PackageFrame(filename).setVisible(true);
 	}
 
 	public void valueChanged(TreeSelectionEvent e) {

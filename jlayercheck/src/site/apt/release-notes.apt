@@ -13,6 +13,6 @@ Release notes
 
 * 09.06.2007
 
-  This website was created using {{{http://maven.apache.org/}Maven}}. There
-  are now file releases yet, but the project can be downloaded from the
-  subversion repository.
+  This website was created using {{{http://maven.apache.org/}Maven}}. File
+  releases are only available for the eclipse plugin, but the rest of the 
+  project can be downloaded from the subversion repository.

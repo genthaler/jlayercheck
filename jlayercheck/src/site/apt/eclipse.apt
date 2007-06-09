@@ -1,0 +1,11 @@
+  The eclipse plugin generates warnings
+  on all lines where you violate the dependencies defined in
+  /jlayercheck.xml (in the project root). You have to put the configuration
+  file there and activate the builder by right clicking on the project
+  in the package explorer and clicking on "Add/Remove JLayerCheck Nature".
+  Afterwards the "JLayerCheck Builder" should occur in the builders
+  section of your project.
+
+  The name of the eclipse update site to install the plugin is:
+  
+  {{http://jlayercheck.sf.net/update-site}}

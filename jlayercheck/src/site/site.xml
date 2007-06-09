@@ -13,6 +13,10 @@
 
     <menu name="Documentation">
       <item name="jlayercheck.xml" href="jlayercheck_xml.html"/>
+      <item name="Ant task" href="ant.html"/>
+      <item name="Eclipse plugin" href="eclipse.html"/>
+      <item name="HTML output" href="html_output.html"/>
+      <item name="Swing GUI" href="swing_gui.html"/>
     </menu>
         
     ${reports}
