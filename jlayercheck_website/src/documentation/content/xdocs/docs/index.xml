@@ -21,18 +21,5 @@
     <title>JLayerCheck</title> 
   </header> 
   <body>
-    <p>JLayerCheck is a tool to check module dependencies in Java programs.
-    You can define groups of packages that should be a module and the allowed
-    dependencies between the modules and the program will generate HTML output
-    that shows an overview, which architectural violations were found, and
-    generates HTML files containing the syntax-highlightes Java sources, where
-    the problematic lines are marked.
-      </p>
-      <p>The program was started some days ago (May 2007) and the website is
-      not complete yet. If you would like to try the program, get it from the
-      subversion repository and take a look at the testcases. The program uses
-      maven, so you should be able to run the testcases by executing "mvn test".
-      </p>
-      <p>Better documentation and more features will follow in the next days.</p>
   </body>
 </document>
