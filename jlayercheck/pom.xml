@@ -27,6 +27,13 @@
 		</license>
 	</licenses>
 
+	<distributionManagement>
+		<site>
+			<id>sourceforge</id>
+			<url>scp://shell.sf.net/home/groups/j/jl/jlayercheck/htdocs/</url>
+		</site>
+	</distributionManagement>
+
 	<developers>
 		<developer>
 			<id>gunia</id>
@@ -204,4 +211,9 @@
 		</repository>
 	</repositories>
 
+    <scm>
+      <connection>scm:svn:https://jlayercheck.svn.sourceforge.net/svnroot/jlayercheck</connection>
+      <developerConnection>scm:svn:https://jlayercheck.svn.sourceforge.net/svnroot/jlayercheck</developerConnection>
+      <url>http://sourceforge.net/svn/?group_id=195208</url>
+   </scm> 
 </project>

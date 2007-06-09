@@ -1,0 +1,22 @@
+  JLayerCheck is a tool to check module dependencies in Java programs.
+  
+  You can define groups of packages that should be a module and the allowed
+  dependencies between the modules and the program will generate HTML output
+  that shows an overview, which architectural violations were found, and
+  generates HTML files containing the syntax-highlightes Java sources, where
+  the problematic lines are marked.
+
+  Recently an eclipse plugin was developed, that makes it easy to use the
+  architecture checking during development. Markers are automatically added
+  to the lines that violate your defined architecture.
+  
+  There are no file releases yet, but you can get a working version from the
+  subversion repository.
+
+  The following image shows the Swing GUI that can be used to inspect the incoming
+  and outgoing dependencies of modules, packages and classes. You can move classes
+  into other packages and see how the dependencies change. Dependency violations are
+  marked in red.
+  
+[images/screenshot_packageframe.png] Screenshot of the Swing GUI.
+

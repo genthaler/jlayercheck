@@ -1,0 +1,18 @@
+Release notes
+
+* 06.05.2007
+
+  Started the project. The functionality is mainly based on the {{{http://asm.objectweb.org/}asm}}
+  package.
+
+* 03.06.2007
+
+  Added eclipse plugin. Now that the base functionality of the library
+  is finished. an eclipse plugin helps to prevent violations of
+  project's architectures.
+
+* 09.06.2007
+
+  This website was created using {{{http://maven.apache.org/}Maven}}. There
+  are now file releases yet, but the project can be downloaded from the
+  subversion repository.

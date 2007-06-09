@@ -1,0 +1,59 @@
+Description of the main configuration file
+
+  The file jlayercheck.xml is the name of the configuration file when
+  it is used with the eclipse plugin. Otherwise it can have any name.
+  Its format should be explained by an example:
+  
+---
+<jlayercheck>
+	<sources>
+		<filesystem bin="target/classes" src="src/main/java/" />
+		<filesystem bin="target/test-classes" src="src/test/java/" />
+	</sources>
+	<architecture>
+		<module name="util">
+			<package name="net.sf.jlayercheck.util" />
+			<dependency name="util_model" />
+			<dependency name="util_io" />
+			<dependency name="util_exceptions" />
+			<dependency name="util_graph" />
+		</module>
+		<module name="util_io">
+			<package name="net.sf.jlayercheck.util.io" />
+		</module>
+		<module name="util_model">
+			<package name="net.sf.jlayercheck.util.model" />
+			<package name="net.sf.jlayercheck.util.modeltree" />
+		</module>
+        ...
+		<exclude>
+			<package name="java.*" />
+			<package name="javax.*" />
+			...
+		</exclude>
+		<entry name="net.sf.jlayercheck.HTMLOutputTest" />
+	</architecture>
+</jlayercheck>
+---
+
+  This example shows all currently available features/tags.
+  
+  * The <<sources>> tag describes where to find .class and .java files. The
+    parser only parses .class files but the .java files are used to show
+    the user in the html output in which lines of the code the violating
+    dependencies are.
+    
+  * The <<module>> tag defines the modules of the system and their dependencies.
+    Every package of the system should be assigned to a module. The modules
+    have dependencies to other modules. That means only the defined modules
+    by be used by a specific module. An access to an unallowed module would
+    be marked as violation of the architecture.
+    
+  * The <<exclude>> tag defines packages that should be excluded from the
+    analysis. Accesses from and to these packages are ignored. Normally
+    you would put external libraries and Sun's core classes here.
+    
+  * The <<entry>> tag is used to define classes that are used as entry
+    points when starting the program (e.g. classes with a Main method, Applets,
+    Servlets, ...). This information is used to compute orphaned, unused
+    classes that can be removed from the project.
