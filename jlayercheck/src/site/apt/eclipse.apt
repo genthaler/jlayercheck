@@ -9,3 +9,12 @@
   The name of the eclipse update site to install the plugin is:
   
   {{http://jlayercheck.sf.net/update-site}}
+  
+  The warning will appear on the lines that violate the architecture:
+
+[images/screenshot_eclipse_warnings.png] Eclipse warnings
+
+  The tooltip of the warning markers and the problems view can be used to get
+  detailed information of the dependency violations:
+
+[images/screenshot_eclipse_problems.png] Eclipse problems
