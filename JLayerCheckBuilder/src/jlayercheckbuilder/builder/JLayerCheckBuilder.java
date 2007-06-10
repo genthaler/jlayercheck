@@ -80,9 +80,9 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	public static final String BUILDER_ID = "JLayerCheckBuilder.jlayercheckBuilderID";
+	public static final String BUILDER_ID = "net.sf.jlayercheck.builder";
 
-	private static final String MARKER_TYPE = "JLayerCheckBuilder.dependency";
+	private static final String MARKER_TYPE = "net.sf.jlayercheck.dependency";
 
 	private void addMarker(IFile file, String message, int lineNumber, int severity) {
 		try {

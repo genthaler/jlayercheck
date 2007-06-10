@@ -11,7 +11,7 @@ public class JLayerCheckNature implements IProjectNature {
 	/**
 	 * ID of this project nature
 	 */
-	public static final String NATURE_ID = "JLayerCheckBuilder.jlayercheckNature";
+	public static final String NATURE_ID = "net.sf.jlayercheck.nature";
 
 	private IProject project;
 

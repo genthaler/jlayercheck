@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="jlayercheckBuilderID"
+         id="net.sf.jlayercheck.builder"
          name="JLayerCheck Builder"
          point="org.eclipse.core.resources.builders">
       <builder
@@ -13,7 +13,7 @@
       </builder>
    </extension>
    <extension
-         id="jlayercheckNature"
+         id="net.sf.jlayercheck.nature"
          name="JLayerCheck Project Nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
@@ -22,7 +22,7 @@
          </run>
       </runtime>
       <builder
-            id="JLayerCheckBuilder.jlayercheckBuilderID">
+            id="net.sf.jlayercheck.builder">
       </builder>
    </extension>
    <extension
@@ -42,7 +42,7 @@
       </objectContribution>
    </extension>
    <extension
-         id="JLayerCheckBuilder.dependency"
+         id="net.sf.jlayercheck.dependency"
          name="Dependency Problem"
          point="org.eclipse.core.resources.markers">
       <super

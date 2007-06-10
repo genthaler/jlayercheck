@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JLayerCheckBuilder Plug-in
-Bundle-SymbolicName: JLayerCheckBuilder; singleton:=true
+Bundle-SymbolicName: net.sf.jlayercheck;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: jlayercheckbuilder.Activator
 Bundle-Vendor: jlayercheck.sf.net
