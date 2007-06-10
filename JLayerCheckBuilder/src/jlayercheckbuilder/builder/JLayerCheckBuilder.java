@@ -17,6 +17,7 @@ import net.sf.jlayercheck.util.modeltree.ClassNode;
 import net.sf.jlayercheck.util.modeltree.ModelTree;
 import net.sf.jlayercheck.util.modeltree.ModuleNode;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -129,6 +130,9 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 			IFile file = (IFile) resource;
 			
 			refreshArchitecture(file);
+			
+			// refresh all files in the project
+			refreshFiles(file.getProject());
 		}
 		if (resource instanceof IFile && resource.getName().endsWith(".java")) {
 			IFile file = (IFile) resource;
@@ -182,6 +186,30 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 			} catch (JavaModelException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	/**
+	 * Checks all files recursively from the given root. It is used to rescan the whole
+	 * project when the configuration file was modified.
+	 * 
+	 * @param root the container to start from, e.g. the project root
+	 */
+	protected void refreshFiles(IContainer root) {
+		IResource allfiles[];
+		try {
+			allfiles = root.members();
+			for(int i=0; i<allfiles.length; i++) {
+				IResource resource = allfiles[i];
+				if (resource instanceof IFile && !resource.getName().endsWith("jlayercheck.xml")) { // prevent recursion loop
+					check(resource);
+				}
+				if (resource instanceof IContainer) {
+					refreshFiles((IContainer) resource);
+				}
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
 	}
 
