@@ -2,6 +2,7 @@ package jlayercheckbuilder.builder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,6 +14,7 @@ import net.sf.jlayercheck.util.exceptions.ConfigurationException;
 import net.sf.jlayercheck.util.exceptions.OverlappingModulesDefinitionException;
 import net.sf.jlayercheck.util.model.ClassDependency;
 import net.sf.jlayercheck.util.model.ClassSource;
+import net.sf.jlayercheck.util.model.FilesystemClassSource;
 import net.sf.jlayercheck.util.modeltree.ClassNode;
 import net.sf.jlayercheck.util.modeltree.ModelTree;
 import net.sf.jlayercheck.util.modeltree.ModuleNode;
@@ -27,6 +29,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageDeclaration;
@@ -46,6 +49,12 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 	 * Contains the dependency informations of all classes.
 	 */
 	protected ModelTree mt;
+	
+	/**
+	 * The list of source directories from which the sources should
+	 * be retrieved and marked.
+	 */
+	protected List<ClassSource> classSources;
 	
 	class JLayerCheckDeltaVisitor implements IResourceDeltaVisitor {
 		/*
@@ -134,7 +143,7 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 			// refresh all files in the project
 			refreshFiles(file.getProject());
 		}
-		if (resource instanceof IFile && resource.getName().endsWith(".java")) {
+		if (resource instanceof IFile && resource.getName().endsWith(".java") && isInClassSource(resource.getProjectRelativePath())) {
 			IFile file = (IFile) resource;
 			deleteMarkers(file);
 
@@ -190,6 +199,31 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 	}
 
 	/**
+	 * Returns true, if this path is specified in the configuration as source path.
+	 * 
+	 * @param projectRelativePath
+	 * @return
+	 */
+	protected boolean isInClassSource(IPath projectRelativePath) {
+		boolean result = false;
+		if (classSources != null) {
+			for(ClassSource cs : classSources) {
+				if (cs instanceof FilesystemClassSource) {
+					FilesystemClassSource fcs = (FilesystemClassSource) cs;
+					String fcssrc = fcs.getSrc().replaceAll("\\\\", "/");
+					if (!fcssrc.endsWith("/")) fcssrc = fcssrc + "/";
+					
+					if (projectRelativePath.toString().startsWith(fcssrc)) {
+						result = true;
+						break;
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * Checks all files recursively from the given root. It is used to rescan the whole
 	 * project when the configuration file was modified.
 	 * 
@@ -202,6 +236,8 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 			for(int i=0; i<allfiles.length; i++) {
 				IResource resource = allfiles[i];
 				if (resource instanceof IFile && !resource.getName().endsWith("jlayercheck.xml")) { // prevent recursion loop
+					deleteMarkers((IFile) resource);
+					
 					check(resource);
 				}
 				if (resource instanceof IContainer) {
@@ -241,6 +277,7 @@ public class JLayerCheckBuilder extends IncrementalProjectBuilder {
 		try {
 			File fi = file.getProject().getFile("/jlayercheck.xml").getRawLocation().toFile();
 			XMLConfiguration xcp = new XMLConfigurationParser().parse(fi);
+			classSources = xcp.getClassSources();
 			DependencyVisitor dv = new DependencyVisitor();
 			for(ClassSource source : xcp.getClassSources()) {
 				source.call(dv);
