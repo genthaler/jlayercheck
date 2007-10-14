@@ -141,6 +141,7 @@ public class IOHelper {
 		try {
 			in = new FileInputStream(from);
 			out = new FileOutputStream(to);
+			copy(in, out);
 		} catch (IOException e) {
 			throw new RuntimeException("Error copying " + from + " to " + to, e);
 		} finally {
@@ -163,6 +164,7 @@ public class IOHelper {
 		try {
 			in = from.openStream();
 			out = new FileOutputStream(to);
+			copy(in, out);
 		} catch (IOException e) {
 			throw new RuntimeException("Error copying " + from + " to " + to, e);
 		} finally {
